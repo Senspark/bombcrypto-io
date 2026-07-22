@@ -1,0 +1,78 @@
+{
+  "env": {
+    "node": true,
+    "browser": true,
+    "es6": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "prettier"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true,
+      "modules": true,
+      "experimentalObjectRestSpread": true
+    },
+    "ecmaVersion": 6,
+    "sourceType": "module"
+
+  },
+  "plugins": [
+    "react", "prettier", "unused-imports", "eslint-plugin-typescript"
+  ],
+  "settings": {
+    "import/resolver": {
+      "alias": {
+        "map": [["src", "./src"]],
+        "extensions": [".ts", "tsx", ".js", ".jsx"]
+      }
+    }
+  },
+  "rules": {
+    "import/extensions": "off",
+    "react/prop-types": "off",
+    "no-param-reassign": "off",
+    "jsx-a11y/anchor-is-valid": "off",
+    "no-shadow": "off",
+    "no-unused-expressions": ["error", { "allowShortCircuit": true }],
+    "no-unused-vars": "off",
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+      "error",
+      {
+        "vars" : "all",
+        "args": "none"
+      }
+    ],
+    "no-multi-assign": "off",
+    "no-plusplus": "off",
+    "global-require": "off",
+    "react/no-array-index-key": "off",
+    "no-return-assign": "off",
+    "import/prefer-default-export": "off",
+    "import/no-unresolved": "off",
+    "camelcase": "off",
+    "import/no-extraneous-dependencies": "off",
+    "react/jsx-wrap-multilines": 2,
+    "no-alert": "off",
+    "no-console": "off",
+    "react/jsx-filename-extension": [
+      "error",
+      {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    ],
+    "prettier/prettier": "error"
+  },
+  "globals": {
+    "App": "readonly",
+    "SearchParams": "readonly",
+    "Response": "readonly",
+    "moment": "readonly",
+    "global": "readonly",
+    "Payload": "readonly"
+  }
+}

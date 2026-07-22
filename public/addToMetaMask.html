@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang='en-US'>
+<head>
+  <title>Add BCoin to MetaMask</title>
+  <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+</head>
+<body>
+<script>
+  var CONFIG = {
+    chainId: '0x38',
+    networkParams: {
+      chainId: '0x38',
+      chainName: 'Binance Smart Chain',
+      rpcUrls: ['https://bsc-dataseed.binance.org/'],
+      blockExplorerUrls: ['https://bscscan.com'],
+      nativeCurrency: {
+        symbol: 'BNB',
+        name: 'BNB',
+        decimals: 18,
+      },
+    },
+    token: {
+      address: '0x00e1656e45f18ec6747F5a8496Fd39B50b38396D',
+      symbol: 'BCOIN',
+      decimals: 18,
+      image: 'https://bombcrypto.io/wp-content/uploads/2021/11/bcoin-icon-2111-200x200-1.png',
+    },
+  };
+
+
+  function detectMetaMask() {
+    if (typeof window.ethereum !== 'undefined' || (typeof window.web3 !== 'undefined')) {
+      // Web3 browser user detected. You can now use the provider.
+      return window['ethereum'] || window.web3.currentProvider;
+    }
+  }
+
+  var provider = detectMetaMask();
+
+  function switchMetaMaskBSCNetwork() {
+    try {
+      if (!provider) {
+        console.log('Metamask not installed.');
+        return;
+      }
+
+      provider.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: CONFIG.chainId }],
+      });
+
+    } catch (switchError) {
+      // This error code indicates that the chain has not been added to MetaMask.
+      if (switchError.code === 4902) {
+        try {
+          provider.request({
+            method: 'wallet_addEthereumChain',
+            params: [CONFIG.networkParams],
+          });
+        } catch (addError) {
+          // handle "add" error
+        }
+      }
+      // handle other "switch" errors
+    }
+  }
+
+  function addToMetaMask() {
+    if (!provider) {
+      alert('Metamask not installed. Please install Metamask.');
+      return;
+    }
+
+    if (provider.chainId != CONFIG.chainId) {
+      alert('Please switch Metamask to Binance Smartchain Network.');
+      return;
+    }
+
+    provider
+      .request({
+        method: 'wallet_watchAsset',
+        params: {
+          type: 'ERC20',
+          options: CONFIG.token,
+        },
+      })
+      .then((success) => {
+        if (success) {
+          console.log('BCOIN successfully added to wallet!');
+        } else {
+          throw new Error('Something went wrong.');
+        }
+      })
+      .catch(console.error);
+  }
+
+  function onLoadMetaMaskNetwork() {
+    setTimeout(function() {
+      console.log(`ChainID = ${provider.chainId}`);
+      if (provider.chainId == CONFIG.chainId) {
+        document.getElementById('metamask_network_result').innerText = 'Metamask is on BSC network. ✅';
+      } else {
+        document.getElementById('metamask_network_result').innerHTML = `failed ❌.
+                    <p>
+                        <ul>
+                    <li>MetaMask currently network: ${provider.chainId}. </li>
+                    <li><a href='javascript:switchMetaMaskBSCNetwork()'>Click here</a> to switch to Binance Smart Chain network</li>
+                    <li>Or follow <a href='https://academy.binance.com/en/articles/connecting-metamask-to-binance-smart-chain' target='_blank'>this instructions</a> to setup manually. </li>
+                    </ul>
+                    </p>
+                `;
+      }
+    }, 1000);
+
+  }
+
+  function onLoad() {
+    console.log(provider);
+    if (!provider) {
+      document.getElementById('install_metamask_result').innerHTML = 'not installed ❌. Click <a href="https://metamask.io/" target="_blank">here</a> to install MetaMask.';
+    } else {
+      document.getElementById('install_metamask_result').innerText = 'installed ✅';
+      onLoadMetaMaskNetwork();
+    }
+  }
+
+  window.onload = onLoad;
+</script>
+<h1>Add BCoin to MetaMask</h1>
+<p>1. Checking MetaMask installation... <a id='install_metamask_result'><i>Checking...</i></a></p>
+<p>2. Switching to Binance Smart Chain network... <a id='metamask_network_result'><i>Checking...</i></a></p>
+<p>3. <a href='javascript:addToMetaMask()'>Click here</a> to add BCoin into MetaMask.</p>
+</body>
+</html>

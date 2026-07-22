@@ -1,0 +1,476 @@
+$bootstrap-sass-asset-helper: false !default;
+$black: #000;
+$white: #fff;
+$brown: rgb(86, 6, 6);
+$primary: #bfc500;
+$font-family-base: 'Montserrat';
+$font-family-base: 'Roboto';
+$dark-secondary: #272626;
+$gray: #4b4a4a;
+$blue: #007aff;
+$dark-blue: #172031;
+$bold-blue: #001f5f;
+$yellow: #ffcc00;
+$purple-dark: #240444;
+$navbar-dark-hover-color: $primary !default;
+$navbar-dark-active-color: $primary;
+$navbar-dark-color: $white;
+
+$theme-colors: (
+  'primary': $primary,
+  'dark-secondary': $dark-secondary,
+  'gray': $gray,
+  'dark': $black,
+  'light': $white,
+  'blue': $blue,
+  'yellow': $yellow,
+  'purple-dark': $purple-dark,
+);
+// css here
+
+@font-face {
+  font-family: 'Retro';
+  src: local('Retro Gaming'),
+    url('../assests/fonts/Retro Gaming 6.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-weight: normal;
+  src: local('Roboto'),
+    url('../assests/fonts/Roboto-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 650;
+  src: local('Roboto'),
+    url('../assests/fonts/Montserrat-SemiBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-weight: 550;
+  src: local('Roboto'),
+    url('../assests/fonts/Roboto-Medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-weight: bold;
+  src: local('Roboto'),
+    url('../assests/fonts/Roboto-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-weight: 900;
+  src: local('Roboto'),
+    url('../assests/fonts/Roboto-Black.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-weight: 300;
+  src: local('Roboto'),
+    url('../assests/fonts/Roboto-Light.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'legend';
+  src: url('../assests/fonts/legendBold.otf');
+}
+
+//passion font
+@font-face {
+  font-family: 'passion';
+  font-weight: 900;
+  src: url('../assests/event/winter/Passion_One/PassionOne-Black.ttf')
+    format('truetype');
+}
+@font-face {
+  font-family: 'passion';
+  font-weight: bold;
+  src: url('../assests/event/winter/Passion_One/PassionOne-Bold.ttf')
+    format('truetype');
+}
+@font-face {
+  font-family: 'passion';
+  font-weight: normal;
+  src: url('../assests/event/winter/Passion_One/PassionOne-Regular.ttf')
+    format('truetype');
+}
+
+li {
+  list-style: none;
+}
+
+.fw-900 {
+  font-weight: 900 !important;
+}
+
+.fw-600 {
+  font-weight: 600 !important;
+}
+
+.fw-550 {
+  font-weight: 550 !important;
+}
+
+.fs-50 {
+  font-size: 50px !important;
+}
+
+.fw-650 {
+  font-weight: 650 !important;
+}
+
+.fs-20 {
+  font-size: 20px !important;
+}
+
+.fs-14 {
+  font-size: 14px;
+}
+
+.fs-26 {
+  font-size: 26px !important;
+}
+
+.fs-24 {
+  font-size: 24px !important;
+}
+
+.h-40 {
+  height: 40px !important;
+}
+
+.pointer {
+  cursor: pointer;
+}
+.object-cover {
+  object-fit: cover;
+}
+
+// css here
+
+#hero {
+  background: #1697d9;
+  .button {
+    width: 194px;
+    margin: 0 10px;
+    @media screen and (max-width: 1300px) {
+      width: 125px;
+    }
+    @media screen and (max-width: 1080px) {
+      width: 100px;
+    }
+    @media screen and (max-width: 768px) {
+      width: 80px;
+    }
+    @media screen and (max-width: 600px) {
+      width: 60px;
+    }
+  }
+  .img-button {
+    top: 78%;
+  }
+  .img-button-other {
+    top: 70%;
+  }
+}
+
+#navbar {
+  background-color: $bold-blue;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 99;
+  .bg-light {
+    background-color: transparent !important;
+  }
+  .nav {
+    height: 50px;
+    .nav-item {
+      bottom: -34px;
+      @media screen and (max-width: 1400px) {
+        bottom: -48px;
+      }
+      @media screen and (max-width: 990px) {
+        bottom: -20px;
+      }
+    }
+    .play {
+      top: -50px;
+      width: 180px;
+    }
+    .img-arrow {
+      left: 65px;
+      bottom: -22px;
+    }
+    .play-now {
+      top: 10px;
+      color: $black;
+    }
+    .navbar-nav {
+      width: 80%;
+      flex-wrap: wrap;
+    }
+    // .navbar-collapse {
+    //         @media screen and (max-width: 1080px) {
+    //                 flex-basis: 215%;
+    //         }
+    // }
+  }
+  .navbar-toggler-icon {
+    left: 0;
+    top: 15px;
+  }
+}
+
+#play_to_earn {
+  background: $dark-blue;
+}
+
+#bcoin_token {
+  background: url('/assests/bcoin-token/1-BG.png') no-repeat center;
+  background-size: cover;
+  color: $white;
+  .detail {
+    @media screen and (min-width: 1320px) {
+      width: 900px;
+    }
+    .new {
+      width: 52px;
+    }
+    .layer {
+      width: 105px;
+      height: 152px;
+    }
+    .col-lg {
+      @media screen and (min-width: 768px) {
+        flex: 0 0 20% !important;
+      }
+    }
+    .title {
+      @media screen and (max-width: 768px) {
+        font-size: 35px !important;
+      }
+    }
+    .text {
+      @media screen and (max-width: 768px) {
+        font-size: 18px !important;
+      }
+    }
+  }
+}
+
+#bcoin_token .wallet-address {
+  font-family: 'Courier New', 'Courier', 'monospace';
+  word-wrap: break-word;
+}
+
+#information {
+  .info {
+    background: url('/assests/images/bgInfomation.png') no-repeat center;
+    background-position: center;
+    background-size: cover;
+  }
+  .title {
+    font-size: 40px;
+    @media screen and (max-width: 1024px) {
+      font-size: 26px;
+    }
+  }
+  .detail {
+    .textInput {
+      top: -5px;
+    }
+    .inputLong {
+      top: 45%;
+      @media screen and (max-width: 500px) {
+        height: 38px !important;
+      }
+      @media screen and (min-width: 1280px) {
+        height: 54px !important;
+      }
+    }
+    .text {
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, 15%);
+      color: $brown;
+      font-size: 18px;
+      @media screen and (max-width: 768px) {
+        transform: translate(-50%, 15%);
+      }
+      @media screen and (max-width: 500px) {
+        transform: translate(-50%, 0);
+        margin-top: 5px;
+      }
+      @media screen and (max-width: 500px) {
+        font-size: 14px;
+      }
+    }
+    .button {
+      width: 50px;
+      right: 0px;
+      bottom: -65px;
+    }
+  }
+  .hero {
+    background: url('/assests/images/bgInfomation2.png') no-repeat center;
+    background-position: center;
+    background-size: cover;
+    .text {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-transform: uppercase;
+      @media screen and (max-width: 1024px) {
+        font-size: 22px;
+      }
+      @media screen and (max-width: 768px) {
+        font-size: 20px;
+      }
+      @media screen and (max-width: 500px) {
+        font-size: 16px;
+      }
+    }
+    .detail {
+      font-size: 16px;
+      padding: 0 30px;
+      @media screen and (max-width: 1024px) {
+        font-size: 12px;
+      }
+    }
+  }
+  .img-short {
+    @media screen and (max-width: 1200px) {
+      height: 45px !important;
+    }
+    @media screen and (max-width: 500px) {
+      height: 30px !important;
+    }
+  }
+}
+
+#item {
+  background: url('/assests/NFTItems/bgItem.png') no-repeat center;
+  background-position: center;
+  background-size: cover;
+  .detail {
+    @media screen and (min-width: 1320px) {
+      width: 900px;
+    }
+    .new {
+      width: 52px;
+    }
+    .layer {
+      width: 105px;
+      height: 152px;
+    }
+    .col-lg {
+      @media screen and (min-width: 768px) {
+        flex: 0 0 20% !important;
+      }
+    }
+    .title {
+      @media screen and (max-width: 768px) {
+        font-size: 35px !important;
+      }
+    }
+    .text {
+      @media screen and (max-width: 768px) {
+        font-size: 18px !important;
+      }
+    }
+  }
+}
+
+#build {
+  &::after {
+    content: '';
+    position: absolute;
+    background: url('/assests/imgBuild/pattern.png') no-repeat;
+    top: -55px;
+    left: 0;
+    background-size: contain;
+    background-position: center;
+    width: 100%;
+    height: 90px;
+  }
+}
+
+#token_metric {
+  .metric-item {
+    font-size: 20px;
+    font-family: 'Arial';
+    margin-bottom: 10px;
+  }
+  .metric-chart {
+    width: 420px;
+  }
+  @media (max-width: 576px) {
+    .metric-title {
+      font-size: 26px !important;
+    }
+    .total-supply {
+      font-size: 17px !important;
+    }
+    .metric-chart {
+      width: 100%;
+    }
+    .metric-item {
+      font-size: 14px;
+    }
+  }
+}
+
+#core_team {
+  background: url('/assests/coreTeam/1-BG.png') no-repeat center;
+  background-size: cover;
+}
+
+#about_senspark {
+  background: url('/assests/aboutSenspark/bg.png') no-repeat center;
+  background-size: cover;
+}
+#core_team {
+  overflow: hidden;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+@keyframes floating {
+  from {
+    transform: translate(0, 0px);
+    opacity: 0;
+  }
+  65% {
+    transform: translate(0, 15px);
+    opacity: 0.5;
+  }
+  to {
+    transform: translate(0, -0px);
+    opacity: 1;
+  }
+}
+
+@import '/node_modules/bootstrap/scss/functions';
+@import '/node_modules/bootstrap/scss/variables';
+@import '/node_modules/bootstrap/scss/mixins';
+@import '/node_modules/bootstrap/scss/root';
+@import '/node_modules/bootstrap/scss/reboot';
+@import '/node_modules/bootstrap/scss/type';
+@import '/node_modules/bootstrap/scss/images';
+@import '/node_modules/bootstrap/scss/containers';
+@import '/node_modules/bootstrap/scss/grid';
+@import '/node_modules/bootstrap/scss/bootstrap';
+@import url('https://fonts.googleapis.com/css2?family=Bungee&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@100;300;400&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Lato:400,700');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;900&display=swap');
