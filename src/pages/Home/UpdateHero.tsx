@@ -17,14 +17,20 @@ const Contain = styled.div`
   }
 `;
 
+/* indicadores em blocos pixelados, no lugar das bolinhas */
 const Dot = styled.div<{ show: boolean }>`
-  width: ${({ show }) => (show ? '18px' : '15px')};
-  height: ${({ show }) => (show ? '18px' : '15px')};
-  opacity: ${({ show }) => (show ? '1' : '0.7')};
-  bottom: ${({ show }) => (show ? '16px' : '17px')};
-  border-radius: 50%;
-  background-color: white;
+  width: ${({ show }) => (show ? '18px' : '14px')};
+  height: ${({ show }) => (show ? '18px' : '14px')};
+  opacity: ${({ show }) => (show ? '1' : '0.75')};
+  border: 2px solid #05060f;
+  border-radius: 4px;
+  background-color: ${({ show }) => (show ? '#FFD23F' : 'white')};
   cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: scale(1.15);
+  }
 `;
 const Board = styled.div`
   position: absolute;
@@ -111,6 +117,7 @@ const Hero: React.FC<Props> = ({
   const dragState = useRef(new DragDealer());
   const { onTouchEnd, onTouchMove, onTouchStart } = useSwipe();
   const [isShowIconVideo, setShowIconVideo] = useState(true);
+  const slides = VIDEO_CONFIG;
 
   useEffect(() => {
     const handleInteraction = () => {
@@ -147,7 +154,7 @@ const Hero: React.FC<Props> = ({
 
   const setVideoVisible = (key: number) => {
     setKeyVisibe(key);
-    setShowIconVideo(VIDEO_CONFIG[key].isLinkYoutube);
+    setShowIconVideo(slides[key]?.isLinkYoutube ?? false);
   };
 
   const selectVideo = (id: number) => {
@@ -158,14 +165,14 @@ const Hero: React.FC<Props> = ({
   };
 
   const openVideo = (id: number) => {
-    const link = VIDEO_CONFIG.find((v) => v.id == id);
+    const link = slides.find((v) => v.id == id);
     if (link) {
       window.open(link.url);
     }
   };
 
   const onEnded = (key: number) => {
-    if (key >= VIDEO_CONFIG.length - 1) {
+    if (key >= slides.length - 1) {
       selectVideo(0);
     } else {
       apiRef.current?.scrollNext();
@@ -195,16 +202,16 @@ const Hero: React.FC<Props> = ({
           }
           return;
         } else {
-          if (keyVisible < VIDEO_CONFIG.length - 1) {
+          if (keyVisible < slides.length - 1) {
             apiRef.current?.scrollNext();
           } else {
-            selectVideo(VIDEO_CONFIG.length - 1);
+            selectVideo(slides.length - 1);
           }
         }
       });
 
   function touchEnd() {
-    const maxKey = VIDEO_CONFIG.length + 1;
+    const maxKey = slides.length + 1;
     onTouchEnd(apiRef.current, keyVisible, maxKey);
   }
 
@@ -230,11 +237,11 @@ const Hero: React.FC<Props> = ({
                 onMouseMove={handleDrag}
                 apiRef={apiRef}
               >
-                {VIDEO_CONFIG.map((data, index) => (
+                {slides.map((data) => (
                   <Video
                     isMuted={isMuted}
                     url={data.url}
-                    key={index}
+                    key={data.url}
                     itemId={`${data.id}`}
                     setVisible={() => {
                       setVideoVisible(data.id);
@@ -264,10 +271,10 @@ const Hero: React.FC<Props> = ({
           onClick={() => openVideo(keyVisible)}
         ></IconVideo>
         <Board>
-          {VIDEO_CONFIG.map((data, index) => (
+          {slides.map((data, index) => (
             <Dot
               key={index}
-              show={keyVisible == VIDEO_CONFIG[index].id}
+              show={keyVisible == data.id}
               style={{
                 marginLeft: `${index == 0 ? 0 : 20}px`,
               }}

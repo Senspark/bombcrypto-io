@@ -19,12 +19,9 @@ export const networkIcons: Record<NetworkType, string> = {
   [NETWORK.SOLANA]: SolanaIcon,
 };
 
-export const networkOptions: NetworkType[] = [
-  NETWORK.BINANCE,
-  NETWORK.POLYGON,
-  NETWORK.TON,
-  NETWORK.SOLANA,
-];
+// redes exibidas no seletor do site (TON/Solana ficam fora por enquanto;
+// as configs delas seguem existindo em BToken/rarity para reativar depois)
+export const networkOptions: NetworkType[] = [NETWORK.BINANCE, NETWORK.POLYGON];
 
 export const LINK_SCAN = {
   BINANCE: 'https://bscscan.com',

@@ -1,66 +1,106 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { Row, Col, Container } from 'react-bootstrap';
+import Link from 'next/link';
 import { logTrackClickEventAnalytics } from 'src/libs/logEvent';
 import logo from 'src/assests/event/worldCup/logo.png';
+import {
+  arcadeBorder,
+  arcadeColors,
+  arcadeFonts,
+  breakpoint,
+} from 'src/theme/arcade';
+import { ArcadeContainer, BrickDivider } from 'src/components/ui';
 
 const Wrapper = styled.footer`
-  display: block;
-  padding-top: 40px;
-  padding-bottom: 40px;
-  background-color: rgb(25, 42, 77);
-  font-family: barlow condensed, sans-serif !important;
-  a {
-    text-decoration: none;
-    color: #ffffffbf;
+  background: ${arcadeColors.nightDeep};
+  color: ${arcadeColors.cloud};
+  font-family: ${arcadeFonts.body};
+`;
+
+const Inner = styled.div`
+  display: grid;
+  grid-template-columns: 1.2fr 2fr;
+  gap: 48px;
+  padding: 56px 0 40px;
+
+  @media ${breakpoint.md} {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 40px 0 28px;
+    text-align: center;
   }
 `;
 
 const LogoFooterImg = styled.img`
   width: 180px;
   cursor: pointer;
-  @media screen and (max-width: 600px) {
-    text-align: center;
-    display: block;
+
+  @media ${breakpoint.md} {
     margin: 0 auto;
   }
 `;
 
-const Text = styled.a`
-  color: rgb(255 255 255/75%);
-  font-size: 21px;
-  display: block;
-  cursor: pointer;
-  font-family: Retro;
-  @media screen and (max-width: 760px) {
-    margin: 20px 0;
-    font-size: 18px;
-  }
-  @media screen and (max-width: 500px) {
-    font-size: 16px;
+const Tagline = styled.p`
+  margin-top: 16px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: ${arcadeColors.smoke};
+  max-width: 320px;
+
+  @media ${breakpoint.md} {
+    margin-left: auto;
+    margin-right: auto;
   }
 `;
 
-const LinkText = styled(Link)`
-  color: rgb(255 255 255/75%);
-  font-size: 21px;
+const Columns = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+
+  @media ${breakpoint.xs} {
+    grid-template-columns: repeat(2, 1fr);
+  }
+`;
+
+const ColumnTitle = styled.h3`
+  font-family: ${arcadeFonts.display};
+  font-size: 16px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: ${arcadeColors.yellow};
+  margin-bottom: 16px;
+`;
+
+const linkStyles = `
   display: block;
+  font-size: 16px;
+  line-height: 2;
+  color: rgba(255, 255, 255, 0.75);
   cursor: pointer;
-  font-family: Retro;
   text-decoration: none;
+  transition: color 0.15s ease;
 
   &:hover {
-    text-decoration: underline;
+    color: ${arcadeColors.yellow};
+    text-decoration: none;
   }
+`;
 
-  @media screen and (max-width: 760px) {
-    margin: 20px 0;
-    font-size: 18px;
-  }
-  @media screen and (max-width: 500px) {
-    font-size: 16px;
-  }
+const Text = styled.a`
+  ${linkStyles}
+`;
+
+const LinkText = styled(Link)`
+  ${linkStyles}
+`;
+
+const Bottom = styled.div`
+  border-top: ${arcadeBorder.thin};
+  padding: 20px 0;
+  font-size: 14px;
+  color: ${arcadeColors.smoke};
+  text-align: center;
 `;
 
 const Footer: React.FC<{ id: string }> = ({ id }) => {
@@ -73,56 +113,76 @@ const Footer: React.FC<{ id: string }> = ({ id }) => {
 
   return (
     <Wrapper id={id}>
-      <Container>
-        <Row xs={12}>
-          <Col md={3}>
+      <BrickDivider />
+      <ArcadeContainer>
+        <Inner>
+          <div>
             <LogoFooterImg onClick={scrollToTop} src={logo} alt="logo footer" />
-          </Col>
-          <Col md={9}>
-            <Row>
-              <Col xs={4} md={4}>
-                <Text onClick={scrollToTop}>Home</Text>
-                <Text
-                  as="a"
-                  target={'_blank'}
-                  href="https://senspark.com/"
-                  onClick={() => logTrackClickEventAnalytics('Metaverse_click')}
-                >
-                  Metaverse
-                </Text>
-              </Col>
-              <Col xs={4} md={4}>
-                <Text
-                  as="a"
-                  target={'_blank'}
-                  href="https://whitepaper.bombcrypto.io/"
-                  onClick={() =>
-                    logTrackClickEventAnalytics('whiterpaper_click')
-                  }
-                >
-                  Whitepaper
-                </Text>
-                <Text
-                  as="a"
-                  target={'_blank'}
-                  href="https://bombcrypto.substack.com/p/bomb-cryptosenspark-media-kit"
-                  onClick={() => logTrackClickEventAnalytics('mediakit_click')}
-                >
-                  Media Kit
-                </Text>
-              </Col>
-              <Col xs={4} md={4}>
-                <div onClick={scrollToTop}>
-                  <LinkText to="/privacy-policy">Privacy Policy</LinkText>
-                </div>
-                <div>
-                  <LinkText to="/term-of-service">Terms Of Service</LinkText>
-                </div>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-      </Container>
+            <Tagline>
+              Plant bombs, explore the map and earn rewards playing BombCrypto.
+            </Tagline>
+          </div>
+
+          <Columns>
+            <div>
+              <ColumnTitle>Game</ColumnTitle>
+              <Text onClick={scrollToTop}>Home</Text>
+              <Text
+                as="a"
+                target={'_blank'}
+                href="https://game.bombcrypto.io/"
+                onClick={() => logTrackClickEventAnalytics('play_click')}
+              >
+                Play Now
+              </Text>
+              <Text
+                as="a"
+                target={'_blank'}
+                href="https://senspark.com/"
+                onClick={() => logTrackClickEventAnalytics('Metaverse_click')}
+              >
+                Metaverse
+              </Text>
+            </div>
+
+            <div>
+              <ColumnTitle>Resources</ColumnTitle>
+              <Text
+                as="a"
+                target={'_blank'}
+                href="https://whitepaper.bombcrypto.io/"
+                onClick={() => logTrackClickEventAnalytics('whiterpaper_click')}
+              >
+                Whitepaper
+              </Text>
+              <Text
+                as="a"
+                target={'_blank'}
+                href="https://bombcrypto.substack.com/p/bomb-cryptosenspark-media-kit"
+                onClick={() => logTrackClickEventAnalytics('mediakit_click')}
+              >
+                Media Kit
+              </Text>
+              <LinkText href="/guide" onClick={scrollToTop}>
+                Guide
+              </LinkText>
+            </div>
+
+            <div>
+              <ColumnTitle>Legal</ColumnTitle>
+              <LinkText href="/privacy-policy" onClick={scrollToTop}>
+                Privacy Policy
+              </LinkText>
+              <LinkText href="/term-of-service" onClick={scrollToTop}>
+                Terms Of Service
+              </LinkText>
+            </div>
+          </Columns>
+        </Inner>
+      </ArcadeContainer>
+      <Bottom>
+        © {new Date().getFullYear()} BombCrypto — Senspark. All rights reserved.
+      </Bottom>
     </Wrapper>
   );
 };

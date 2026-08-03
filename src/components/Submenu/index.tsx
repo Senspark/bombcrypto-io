@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Dropdown } from 'react-bootstrap';
 import { NavText, navText } from 'src/data/nav';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { logTrackClickEventAnalytics } from 'src/libs/logEvent';
 import PolygonIcon from 'src/assests/images/Polygon_network.png';
 import BNBIcon from 'src/assests/images/Binance-network.png';
@@ -13,15 +13,24 @@ import {
   NetworkType,
   networkIcons,
 } from 'src/Contants/Contants';
+import {
+  arcadeBorder,
+  arcadeColors,
+  arcadeFonts,
+  arcadeRadius,
+  hardShadow,
+} from 'src/theme/arcade';
 
 const Wrapper = styled.nav<{ show?: boolean }>`
   position: fixed;
-  top: 80px;
+  top: 72px;
   left: 0;
-  width: 170px;
+  width: 230px;
   height: 100vh;
   z-index: 9999;
-  background-color: rgba(143, 65, 32, 1);
+  background: ${arcadeColors.panel};
+  border-right: ${arcadeBorder.thick};
+  box-shadow: ${hardShadow(6)};
   display: ${({ show }) => (show ? 'block' : 'none')};
 `;
 
@@ -29,20 +38,24 @@ const NavMenu = styled.label`
   position: absolute;
   width: 100%;
   height: 100%;
-  padding: 0;
+  padding: 32px 0 0;
   text-align: center;
-  padding-top: 100px;
+
   a {
-    font-family: Lato, sans-serif;
-    color: #fff;
-    margin: 10px 0;
-    font-size: 1.5em;
-    font-weight: 550;
+    display: block;
+    font-family: ${arcadeFonts.display};
+    color: ${arcadeColors.cloud};
+    padding: 14px 0;
+    font-size: 18px;
+    letter-spacing: 1px;
+    transition: background 0.15s ease, color 0.15s ease;
+
     &:hover {
-      background-color: rgba(0, 0, 0, 0.05);
-      color: #fff;
+      background: ${arcadeColors.yellow};
+      color: ${arcadeColors.ink};
     }
   }
+
   li {
     animation: floating 0.6s ease-in-out;
   }
@@ -62,7 +75,7 @@ const SubMenu: React.FC<Props> = ({
   doChangeNetwork,
   network,
 }) => {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const clickNavMenu = React.useCallback(
     (menu) => {
@@ -70,17 +83,15 @@ const SubMenu: React.FC<Props> = ({
       if (menu.conversion) {
         logTrackClickEventAnalytics(menu.conversion);
       }
-      let link = menu.link;
-      if (menu.linkPolygon && network == NETWORK.POLYGON) {
-        link = menu.linkPolygon;
-      }
+      // links são fixos, independentes da rede selecionada
+      const link = menu.link;
       if (menu.target) {
         window.open(link);
       } else {
-        navigate(link);
+        router.push(link);
       }
     },
-    [network],
+    [network, router],
   );
 
   return (
@@ -125,10 +136,12 @@ const SubMenu: React.FC<Props> = ({
             </div>
             <Dropdown.Menu
               style={{
-                backgroundColor: '#3A1620',
-                borderRadius: '0 0 20px 20px',
+                backgroundColor: arcadeColors.panel,
+                border: arcadeBorder.thin,
+                borderRadius: arcadeRadius.md,
+                boxShadow: hardShadow(4),
                 zIndex: '10',
-                marginTop: '-30px',
+                marginTop: '-24px',
               }}
             >
               {networkOptions.map(
@@ -175,13 +188,13 @@ const CustomToggle = React.forwardRef<HTMLAnchorElement, CustomToggleProps>(
           style={{
             display: 'flex',
             alignItems: 'center',
-            backgroundColor: '#722C3F',
-            borderRadius: '15px',
-            backgroundSize: '100% 100%',
+            backgroundColor: arcadeColors.panelLight,
+            border: arcadeBorder.thin,
+            borderRadius: arcadeRadius.md,
             width: '170px',
-            height: '40px',
+            height: '42px',
             justifyContent: 'center',
-            boxShadow: '0 3px 5px rgba(0, 0, 0, 0.7)',
+            boxShadow: hardShadow(4),
             position: 'relative',
             zIndex: '9999',
           }}

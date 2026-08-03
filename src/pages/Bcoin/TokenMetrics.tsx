@@ -3,13 +3,27 @@ import styled from 'styled-components';
 import bgTokenMetrics from 'src/assests/bcoin/vip-bg.jpeg';
 import btnStake from 'src/assests/bcoin/btn-stake.png';
 import vipRanking from 'src/assests/bcoin/vip_v2.png';
+import {
+  arcadeBorder,
+  arcadeColors,
+  arcadeFonts,
+  arcadeRadius,
+  hardShadow,
+  pixelTextShadow,
+} from 'src/theme/arcade';
+import { Reveal, SectionTitle } from 'src/components/ui';
 
 const SectionWrapper = styled.section`
   width: 100%;
-  background: url(${bgTokenMetrics}) no-repeat center;
+  background: linear-gradient(
+      180deg,
+      rgba(8, 10, 31, 0.9) 0%,
+      rgba(14, 17, 48, 0.92) 100%
+    ),
+    url(${bgTokenMetrics}) no-repeat center;
   background-size: cover;
-  font-family: 'Montserrat', sans-serif;
-  color: white;
+  font-family: ${arcadeFonts.body};
+  color: ${arcadeColors.cloud};
 `;
 
 const Container = styled.div`
@@ -20,13 +34,6 @@ const Container = styled.div`
   padding-bottom: 40px;
 `;
 
-const Title = styled.div`
-  font-size: 41px;
-  font-weight: 900;
-  color: #ffea00;
-  text-align: center;
-`;
-
 const SummaryWrapper = styled.div`
   margin-top: 40px;
   display: flex;
@@ -34,17 +41,32 @@ const SummaryWrapper = styled.div`
   text-align: center;
 `;
 
-const SummaryItem = styled.div``;
+/** Cada número vira uma "placa de placar". */
+const SummaryItem = styled.div`
+  background: ${arcadeColors.panel};
+  border: ${arcadeBorder.thin};
+  border-radius: ${arcadeRadius.md};
+  box-shadow: ${hardShadow(5)};
+  padding: 18px 10px;
+  margin: 0 8px;
+`;
 
 const SummaryTitle = styled.p`
-  font-size: 26px;
+  font-family: ${arcadeFonts.display};
+  font-size: 22px;
+  color: ${arcadeColors.yellow};
+  margin-bottom: 6px;
+
   @media screen and (max-width: 500px) {
-    font-size: 20px;
+    font-size: 15px;
   }
 `;
 
 const SummaryDesc = styled.p`
-  font-size: 10px;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: ${arcadeColors.smoke};
+  margin: 0;
 `;
 
 const VipWrapper = styled.div`
@@ -67,13 +89,17 @@ const VipWrapper = styled.div`
 const VipInfo = styled.div``;
 
 const VipInfoTitle = styled.p`
-  font-size: 31px;
-  color: #ffcc00;
-  margin: 0;
+  font-family: ${arcadeFonts.display};
+  font-size: 26px;
+  color: ${arcadeColors.yellow};
+  text-shadow: ${pixelTextShadow()};
+  margin: 0 0 12px;
 `;
 
 const VipInfoDesc = styled.p`
-  font-size: 19px;
+  font-size: 16px;
+  line-height: 1.7;
+  color: ${arcadeColors.smoke};
 `;
 
 const VipRanking = styled.img`
@@ -89,40 +115,44 @@ const TokenMetrics: React.FC<{ id: string }> = ({ id }) => {
   return (
     <SectionWrapper id={id}>
       <Container className="container">
-        <Title>Token Metrics</Title>
-        <SummaryWrapper>
-          <SummaryItem className="col-4 col-sm-3">
-            <SummaryTitle>2,000,000</SummaryTitle>
-            <SummaryDesc>SUPPLY AT PUBLIC SALE</SummaryDesc>
-          </SummaryItem>
-          <SummaryItem className="col-4 col-sm-3">
-            <SummaryTitle>$0.1</SummaryTitle>
-            <SummaryDesc>PUBLIC SALE PRICE</SummaryDesc>
-          </SummaryItem>
-          <SummaryItem className="col-4 col-sm-3">
-            <SummaryTitle>100,000,000</SummaryTitle>
-            <SummaryDesc>TOTAL SUPPLY</SummaryDesc>
-          </SummaryItem>
-        </SummaryWrapper>
-        <VipWrapper>
-          <VipInfo className="col-sm-6 col-12 vip-left">
-            <VipInfoTitle>Vip & Stake</VipInfoTitle>
-            <VipInfoDesc>
-              Users can stake Bcoin to upgrade their VIP rating.
-              <br />
-              The higher the VIP level, the more incentives the
-              <br />
-              player will receive.
-            </VipInfoDesc>
-            <VipStakeBcoinButton
-              src={btnStake}
-              onClick={() => window.open('https://dapp.bombcrypto.io')}
-            />
-          </VipInfo>
-          <VipInfo className="col-sm-6 col-12">
-            <VipRanking src={vipRanking} />
-          </VipInfo>
-        </VipWrapper>
+        <SectionTitle $center>Token Metrics</SectionTitle>
+        <Reveal>
+          <SummaryWrapper>
+            <SummaryItem className="col-4 col-sm-3">
+              <SummaryTitle>2,000,000</SummaryTitle>
+              <SummaryDesc>SUPPLY AT PUBLIC SALE</SummaryDesc>
+            </SummaryItem>
+            <SummaryItem className="col-4 col-sm-3">
+              <SummaryTitle>$0.1</SummaryTitle>
+              <SummaryDesc>PUBLIC SALE PRICE</SummaryDesc>
+            </SummaryItem>
+            <SummaryItem className="col-4 col-sm-3">
+              <SummaryTitle>100,000,000</SummaryTitle>
+              <SummaryDesc>TOTAL SUPPLY</SummaryDesc>
+            </SummaryItem>
+          </SummaryWrapper>
+        </Reveal>
+        <Reveal delay={120}>
+          <VipWrapper>
+            <VipInfo className="col-sm-6 col-12 vip-left">
+              <VipInfoTitle>Vip & Stake</VipInfoTitle>
+              <VipInfoDesc>
+                Users can stake Bcoin to upgrade their VIP rating.
+                <br />
+                The higher the VIP level, the more incentives the
+                <br />
+                player will receive.
+              </VipInfoDesc>
+              <VipStakeBcoinButton
+                src={btnStake}
+                onClick={() => window.open('https://dapp.bombcrypto.io')}
+              />
+            </VipInfo>
+            <VipInfo className="col-sm-6 col-12">
+              <VipRanking src={vipRanking} />
+            </VipInfo>
+          </VipWrapper>
+        </Reveal>
       </Container>
     </SectionWrapper>
   );

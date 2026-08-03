@@ -1,18 +1,23 @@
 import React, { Fragment, useState } from 'react';
 import { Nav, Navbar, Dropdown } from 'react-bootstrap';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import ReactPixel from 'react-snapchat-pixel';
-import styled from 'styled-components';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { snapEvent, snapTrack } from 'src/libs/snapchat';
+import styled, { keyframes } from 'styled-components';
 import ReactGA from 'react-ga';
 
 import logo from '../../assests/event/worldCup/logo.png';
-import playIcon from '../../assests/imgHeader_2024/button_play.png';
-import playIconActive from '../../assests/imgHeader_2024/button_play_hover.png';
 import SubMenu from '../../components/Submenu';
 import ModalAdvertisement from 'src/components/ModalComingSoon';
 import { logTrackClickEventAnalytics } from '../../libs/logEvent';
 import { logEvenAppsflyer } from '../../libs/appsflyer';
-import { platinum, saddleBrown } from './color';
+import {
+  arcadeBorder,
+  arcadeColors,
+  arcadeFonts,
+  arcadeRadius,
+  hardShadow,
+} from 'src/theme/arcade';
 
 import BNBIcon from 'src/assests/images/Binance-network.png';
 import arrowButton from 'src/assests/images/arrow.png';
@@ -30,11 +35,10 @@ type Props = {
 };
 
 const ContentHeader: React.FC<Props> = ({ ChangeNetWork, showSp }) => {
-  const location = useLocation();
+  const router = useRouter();
   const [show, setShow] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [netWorkSelected, setNetwork] = useState(NETWORK.BINANCE);
-  const navigate = useNavigate();
 
   const clickShowMenuSp = (value: boolean) => {
     setShow(value);
@@ -44,9 +48,9 @@ const ContentHeader: React.FC<Props> = ({ ChangeNetWork, showSp }) => {
   };
 
   const clickPlayNow = React.useCallback(() => {
-    ReactPixel.snaptr('track', 'CUSTOM_EVENT_4');
+    snapEvent('track', 'CUSTOM_EVENT_4');
     ReactGA.ga('send', 'event', 'play_now', 'button_click', 'Campaign', '0');
-    ReactPixel.track('click-playnow', {
+    snapTrack('click-playnow', {
       content_name: 'playnow',
       content_category: 'button_click',
       content_ids: [''],
@@ -73,9 +77,9 @@ const ContentHeader: React.FC<Props> = ({ ChangeNetWork, showSp }) => {
   return (
     <Fragment>
       <NavItemLeftLogo>
-        <Navbar.Brand className="pt-0" onClick={() => navigate('/')}>
-          <div style={{ display: 'flex' }}>
-            <div style={{ marginTop: '13px' }}>
+        <Navbar.Brand className="pt-0" onClick={() => router.push('/')}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div>
               <Navbar.Toggle
                 aria-controls="basic-navbar-nav"
                 onClick={() => clickShowMenuSp(!show)}
@@ -97,7 +101,7 @@ const ContentHeader: React.FC<Props> = ({ ChangeNetWork, showSp }) => {
 
       {/* DAPPS + MARKET + GUIDE */}
       <Nav
-        className="my-1 mb-lg-0 mt-lg-3 d-none d-lg-flex"
+        className="d-none d-lg-flex align-items-center"
         style={{ maxHeight: '100px' }}
       >
         <NavItemLeft>
@@ -114,37 +118,30 @@ const ContentHeader: React.FC<Props> = ({ ChangeNetWork, showSp }) => {
           <NavItem
             onClick={() => {
               logTrackClickEventAnalytics('market_click');
-              const url =
-                netWorkSelected === NETWORK.BINANCE
-                  ? 'https://market.bombcrypto.io/'
-                  : 'https://market-polygon.senspark.com/';
-              window.open(url, '_blank');
+              // o market é único, independente da rede selecionada
+              window.open('https://market.bombcrypto.io/', '_blank');
             }}
           >
             MARKET
           </NavItem>
         </NavItemLeft>
         <NavItemLeft>
-          <NavItem isActive={location.pathname === '/guide'}>
-            <Link to="/guide">GUIDE</Link>
+          <NavItem isActive={router.pathname === '/guide'}>
+            <Link href="/guide">GUIDE</Link>
           </NavItem>
         </NavItemLeft>
       </Nav>
 
       {/* PLAY NOW */}
-      <Nav className="d-none d-lg-block">
-        <a onClick={clickPlayNow} className="pe-4">
-          <IconPlay
-            src={playIcon}
-            onMouseOver={(e) => (e.currentTarget.src = playIconActive)}
-            onMouseOut={(e) => (e.currentTarget.src = playIcon)}
-          />
-        </a>
+      <Nav className="d-none d-lg-flex align-items-center pe-4">
+        <PlayButton type="button" onClick={clickPlayNow}>
+          Play Now
+        </PlayButton>
       </Nav>
 
       {/* WHITEPAPER + OTHER */}
       <Nav
-        className="my-1 my-lg-0 mt-lg-3 d-none d-lg-flex align-items-center"
+        className="d-none d-lg-flex align-items-center"
         style={{ maxHeight: '100px' }}
       >
         <NavItem
@@ -191,7 +188,7 @@ const ContentHeader: React.FC<Props> = ({ ChangeNetWork, showSp }) => {
 
       {/* NETWORK SWITCH */}
       <Nav
-        className="my-1 my-lg-0 mt-lg-3 d-none d-lg-flex align-items-center"
+        className="d-none d-lg-flex align-items-center"
         style={{ maxHeight: '100px' }}
       >
         <NavDropdown>
@@ -205,10 +202,12 @@ const ContentHeader: React.FC<Props> = ({ ChangeNetWork, showSp }) => {
             </Dropdown.Toggle>
             <Dropdown.Menu
               style={{
-                backgroundColor: '#3A1620',
-                borderRadius: '0 0 20px 20px',
+                backgroundColor: arcadeColors.panel,
+                border: arcadeBorder.thin,
+                borderRadius: arcadeRadius.md,
+                boxShadow: hardShadow(4),
                 zIndex: '10',
-                marginTop: '-10px',
+                marginTop: '6px',
                 marginLeft: '-1px',
               }}
             >
@@ -268,13 +267,13 @@ const CustomToggle = React.forwardRef<HTMLDivElement, CustomToggleProps>(
           display: 'flex',
           alignItems: 'center',
           marginRight: '20px',
-          backgroundColor: '#722C3F',
-          borderRadius: '15px',
-          backgroundSize: '100% 100%',
+          backgroundColor: arcadeColors.panelLight,
+          border: arcadeBorder.thin,
+          borderRadius: arcadeRadius.md,
           width: '170px',
-          height: '40px',
+          height: '42px',
           justifyContent: 'center',
-          boxShadow: '0 3px 5px rgba(0, 0, 0, 0.7)',
+          boxShadow: hardShadow(4),
           position: 'relative',
           zIndex: '9999',
           cursor: 'pointer',
@@ -313,62 +312,91 @@ const NavItemLeft = styled.div`
 `;
 
 const NavItem = styled.div<{ isActive?: boolean }>`
-  background-color: ${({ isActive }) =>
-    isActive ? saddleBrown : 'transparent'};
-  border-top: 6px solid
-    ${({ isActive }) => (isActive ? saddleBrown : 'transparent')};
-  font-weight: 500;
-  font-size: 24px;
-  border-radius: 10px;
-  text-shadow: 0px 0px 3px black;
-  font-family: Retro;
+  position: relative;
+  font-size: 20px;
+  font-family: ${arcadeFonts.display};
+  letter-spacing: 1px;
   cursor: pointer;
-  color: ${platinum};
-  margin: 1px 10px 0px;
+  color: ${({ isActive }) =>
+    isActive ? arcadeColors.yellow : arcadeColors.cloud};
+  margin: 0 10px;
+  padding: 6px 4px;
   text-decoration: none;
-  padding: 0px 5px 0px 5px;
   white-space: nowrap;
+  transition: color 0.15s ease;
 
   a {
-    color: ${platinum};
+    color: inherit;
     text-decoration: none;
   }
 
+  /* sublinhado em bloco, como uma barra de energia */
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 4px;
+    background: ${arcadeColors.yellow};
+    transform: scaleX(${({ isActive }) => (isActive ? 1 : 0)});
+    transform-origin: left;
+    transition: transform 0.18s ease;
+  }
+
   &:hover {
-    background: ${saddleBrown};
-    color: ${platinum};
+    color: ${arcadeColors.yellow};
+  }
+
+  &:hover::after {
+    transform: scaleX(1);
   }
 
   @media (max-width: 1400px) {
-    font-size: 20px;
-    margin: 4px 6px 0px;
+    font-size: 18px;
+    margin: 0 8px;
   }
   @media (max-width: 1199px) {
     margin: 0 4px;
-    font-size: 17px;
-  }
-  @media (max-width: 1040px) {
-    margin: 0 2px;
     font-size: 16px;
   }
 `;
 
-const IconPlay = styled.img`
-  height: 105px;
-  width: 160px;
-  cursor: pointer;
+/* anel de energia pulsando, chamando para o clique */
+const playPulse = keyframes`
+  0% { box-shadow: ${hardShadow(5)}, 0 0 0 0 rgba(255, 210, 63, 0.55); }
+  70% { box-shadow: ${hardShadow(5)}, 0 0 0 14px rgba(255, 210, 63, 0); }
+  100% { box-shadow: ${hardShadow(5)}, 0 0 0 0 rgba(255, 210, 63, 0); }
+`;
 
-  @media (max-width: 1400px) {
-    margin-top: -8px;
-    height: 95px;
-    width: 140px;
+const PlayButton = styled.button`
+  font-family: ${arcadeFonts.display};
+  font-size: 20px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: ${arcadeColors.ink};
+  background: ${arcadeColors.yellow};
+  border: ${arcadeBorder.thick};
+  border-radius: ${arcadeRadius.md};
+  box-shadow: ${hardShadow(5)};
+  padding: 10px 26px;
+  cursor: pointer;
+  animation: ${playPulse} 2.4s ease-out infinite;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+
+  &:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: ${hardShadow(7)};
   }
+
+  &:active {
+    transform: translate(3px, 3px);
+    box-shadow: ${hardShadow(0)};
+  }
+
   @media (max-width: 1199px) {
-    margin-left: 0%;
-  }
-  @media (max-width: 1040px) {
-    height: 80px;
-    width: 120px;
+    font-size: 17px;
+    padding: 8px 18px;
   }
 `;
 
@@ -380,57 +408,63 @@ const OtherWrapper = styled.div`
   }
 `;
 
+/* sem vão entre o item e o menu: um gap aqui derruba o :hover no meio do
+   caminho e o dropdown fecha antes do clique */
 const OtherMenu = styled.div`
   display: none;
   position: absolute;
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #3a1620;
-  border-radius: 0 0 12px 12px;
-  padding: 6px 0;
-  min-width: 180px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
+  background: ${arcadeColors.panel};
+  border: ${arcadeBorder.thick};
+  border-radius: ${arcadeRadius.md};
+  box-shadow: ${hardShadow(6)};
+  padding: 8px 0;
+  min-width: 210px;
+  overflow: hidden;
   z-index: 9999;
 `;
 
 const OtherMenuItem = styled.div`
-  font-family: Retro;
-  font-weight: 500;
-  font-size: 20px;
-  color: ${platinum};
-  text-shadow: 0px 0px 3px black;
+  font-family: ${arcadeFonts.display};
+  font-size: 16px;
+  color: ${arcadeColors.cloud};
   text-align: center;
-  padding: 8px 12px;
+  padding: 10px 12px;
   cursor: pointer;
   white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
 
   &:hover {
-    background: ${saddleBrown};
+    background: ${arcadeColors.yellow};
+    color: ${arcadeColors.ink};
   }
 
-  @media (max-width: 1400px) {
-    font-size: 18px;
-  }
   @media (max-width: 1199px) {
-    font-size: 16px;
+    font-size: 14px;
   }
 `;
 
 const NavDropdown = styled.div`
-  @media (max-width: 1199px) {
-    margin: -6px 0 0 10px;
-  }
-  @media (min-width: 1200px) {
-    margin-top: 2px;
-  }
+  display: flex;
+  align-items: center;
 `;
 
 const IconLogo = styled.img`
-  width: 160px;
+  width: 150px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+
+  &:hover {
+    transform: scale(1.04);
+  }
+
   @media (max-width: 1400px) {
-    margin-top: -5px;
-    margin-left: -30px;
+    width: 132px;
+  }
+  @media (max-width: 991px) {
+    width: 118px;
   }
 `;
 

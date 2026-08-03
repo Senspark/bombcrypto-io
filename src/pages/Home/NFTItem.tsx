@@ -11,35 +11,37 @@ import {
 } from 'src/data/item';
 import { RarityConfig, RarityType, RARITYDEFINE } from 'src/data/rarity';
 import houseImage from '../../assests/NFTItems/House.png';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import coppy from '../../assests/updateHome/Ô button/iconCoppy.png';
 import { isMobileDevice } from '../../utils/helpers';
 import bHeroicon from '../../assests/images/bhero.png';
 import stats from '../../assests/images/stats.png';
 import new_stats from '../../assests/images/stats_new.png';
 import bomberHouse from '../../assests/images/BomberHouse.png';
-import marketBtn from '../../assests/NFTItems/visit_market.png';
 import rechart from '../../assests/NFTItems/recharge.png';
 import screenShot from '../../assests/NFTItems/supervilla_screenshot.png';
 import tonScreenShot from '../../assests/NFTItems/bombTON_house.png';
 import solScreenShot from '../../assests/NFTItems/bombSOL_house.png';
 import { NETWORK, NetworkType } from 'src/Contants/Contants';
 import { LINK_SCAN } from 'src/Contants/Contants';
+import {
+  arcadeBorder,
+  arcadeColors,
+  arcadeFonts,
+  arcadeRadius,
+  hardShadow,
+} from 'src/theme/arcade';
+import { Reveal, SectionTitle } from 'src/components/ui';
+import { arcadeToast } from 'src/components/ui/toast';
 
 const Head = styled.div`
   text-align: center;
 `;
 
-const Title = styled.p`
-  color: white;
-  font-weight: 800;
-  font-size: 50px;
-  margin: 0;
-`;
-
 const TextTitle = styled.div`
-  color: white;
-  font-size: 20px;
+  color: ${arcadeColors.smoke};
+  font-size: 18px;
+  line-height: 1.6;
 `;
 
 const Content = styled.div`
@@ -79,35 +81,57 @@ const ImgsScreenShot = styled.img`
 `;
 
 const ContractInfo = styled.div`
-  background-color: white;
-  width: 60%;
-  padding: 3px 10px 5px 10px;
-  border-radius: 20px;
-  margin-left: 20%;
+  background: ${arcadeColors.panel};
+  border: ${arcadeBorder.thick};
+  border-radius: ${arcadeRadius.lg};
+  box-shadow: ${hardShadow(8)};
+  width: 70%;
+  padding: 18px 20px;
+  margin: 0 auto;
   position: relative;
 
   .wallet-address {
     font-size: 14px;
     font-weight: bold;
+    color: ${arcadeColors.cyan} !important;
+    word-break: break-all;
+  }
+
+  .contract-title {
+    font-size: 17px;
+    font-weight: bold;
+    color: ${arcadeColors.white} !important;
   }
 
   @media screen and (max-width: 990px) {
     width: 100%;
-    margin-left: 0%;
-  }
-
-  .contract-title {
-    font-size: 18px;
-    font-weight: bold;
   }
 `;
 
-const MarketBtn = styled.img`
-  position: absolute;
-  width: 40%;
-  left: 30%;
+const MarketBtn = styled.button`
+  font-family: ${arcadeFonts.display};
+  font-size: 15px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: ${arcadeColors.ink};
+  background: ${arcadeColors.yellow};
+  border: ${arcadeBorder.thin};
+  border-radius: ${arcadeRadius.md};
+  box-shadow: ${hardShadow(4)};
+  padding: 10px 22px;
+  margin-top: 16px;
   cursor: pointer;
-  top: 80%;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+
+  &:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: ${hardShadow(6)};
+  }
+
+  &:active {
+    transform: translate(2px, 2px);
+    box-shadow: ${hardShadow(0)};
+  }
 `;
 
 const ContractContain = styled.div`
@@ -133,8 +157,11 @@ const CoppyIcon = styled.img`
 `;
 
 const RarityText = styled.div`
-  color: white;
-  font-size: 24px;
+  color: ${arcadeColors.smoke};
+  font-size: 17px;
+  line-height: 1.6;
+  max-width: 760px;
+  margin: 0 auto;
   text-align: center;
   white-space: pre-line;
   min-height: 90px;
@@ -143,19 +170,27 @@ const RarityText = styled.div`
   justify-content: center;
 `;
 
+/** Raridade não selecionada: pula ao passar o mouse. */
 const CursorPoint = styled.img`
   position: relative;
   cursor: pointer;
+  transition: transform 0.15s ease;
+
+  &:hover {
+    transform: translateY(-6px) scale(1.06);
+  }
+`;
+
+/* a raridade selecionada pulsa de leve */
+const glowPulse = keyframes`
+  0%, 100% { transform: translate(-22%, -22%) scale(1); }
+  50% { transform: translate(-22%, -22%) scale(1.06); }
 `;
 
 const Glow = styled.img`
   position: absolute;
   transform: translate(-22%, -22%);
-  font-size: 18px;
-  text-align: center;
-  text-weight: bold;
-  text-space: 1px
-  magrin: 50%;
+  animation: ${glowPulse} 1.8s ease-in-out infinite;
 `;
 
 const LeftText = styled.div`
@@ -194,15 +229,16 @@ const NFTCONFIG = {
       title: 'Bombcrypto Hero (POL)',
       symbol: 'BHERO',
       address: '0xd8a06936506379dbbe6e2d8ab1d8c96426320854',
+      // market único, independente da rede
       market:
-        'https://market-polygon.bombcrypto.io/market/bhero?page=1&size=10&order_by=desc%3Ablock_timestamp',
+        'https://market.bombcrypto.io/market/bhero?page=1&size=10&order_by=desc%3Ablock_timestamp',
     },
     house: {
       title: 'Bombcrypto House (POL)',
       symbol: 'BHOUSE',
       address: '0x2d5f4ba3e4a2d991bd72edbf78f607c174636618',
       market:
-        'https://market-polygon.bombcrypto.io/market/bhouse?page=1&size=10&order_by=desc%3Ablock_timestamp',
+        'https://market.bombcrypto.io/market/bhouse?page=1&size=10&order_by=desc%3Ablock_timestamp',
     },
   },
   Ton: {
@@ -265,7 +301,7 @@ const NFTItem: React.FC<{ id: string; network: string }> = ({
 
   const onClickAddress = (address: string) => {
     if (!address || address.trim() === '') {
-      alert('Information not available.');
+      arcadeToast('Information not available.');
       return;
     }
 
@@ -279,7 +315,7 @@ const NFTItem: React.FC<{ id: string; network: string }> = ({
     const scanUrl = scanMap[network]; // `network` phải là biến toàn cục hoặc prop
 
     if (!scanUrl || scanUrl.trim() === '') {
-      alert('Information not available.');
+      arcadeToast('Information not available.');
       return;
     }
 
@@ -314,7 +350,7 @@ const NFTItem: React.FC<{ id: string; network: string }> = ({
     textArea.select();
     try {
       document.execCommand('copy');
-      alert(`Address Copied!`);
+      arcadeToast('Address copied!');
     } catch (err) {
       console.error('Unable to copy to clipboard', err);
     }
@@ -324,7 +360,7 @@ const NFTItem: React.FC<{ id: string; network: string }> = ({
     if (window.isSecureContext && navigator.clipboard) {
       navigator.clipboard.writeText(text).then(
         function () {
-          alert(`Address Copied!`);
+          arcadeToast('Address copied!');
           console.log('Async: Copying to clipboard was successful!');
         },
         function (err) {
@@ -403,7 +439,9 @@ const NFTItem: React.FC<{ id: string; network: string }> = ({
       <Container>
         <Content className="detail">
           <Head>
-            <Title className="title">NFT ITEMS</Title>
+            <SectionTitle $center className="title">
+              NFT Items
+            </SectionTitle>
             <TextTitle className="text">
               Earn your NFT items by playing the
               <br />
@@ -411,55 +449,64 @@ const NFTItem: React.FC<{ id: string; network: string }> = ({
               <br />
             </TextTitle>
             <br />
-            <ContractInfo className="mb-3">
-              <ContractContain>
-                {/* Icon + Symbol */}
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    minWidth: '60px',
-                  }}
-                >
-                  <CoinIcon src={bHeroicon} alt="bhero" />
-                  <p className="mb-0 text-black contract-title">
-                    {hero.symbol}
-                  </p>
-                </div>
-
-                {/* Title + Address */}
-                <div style={{ flexGrow: 1 }}>
-                  <LeftText>
+            <Reveal>
+              <ContractInfo className="mb-3">
+                <ContractContain>
+                  {/* Icon + Symbol */}
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      minWidth: '60px',
+                    }}
+                  >
+                    <CoinIcon src={bHeroicon} alt="bhero" />
                     <p className="mb-0 text-black contract-title">
-                      {hero.title}
+                      {hero.symbol}
                     </p>
-                    <p
-                      className="mb-0 text-blue wallet-address"
-                      style={{ cursor: hasHeroAddress ? 'pointer' : 'default' }}
-                      onClick={() =>
-                        hasHeroAddress && onClickAddress(hero.address)
-                      }
-                    >
-                      {hasHeroAddress ? hero.address : 'Coming soon'}
-                    </p>
-                  </LeftText>
-                </div>
+                  </div>
 
-                {/* Coppy icon (ẩn khi thiếu nhưng giữ layout) */}
-                <div style={{ width: '30px' }}>
-                  {!isMobile && hasHeroAddress && (
-                    <CoppyIcon src={coppy} onClick={() => Copy(hero.address)} />
-                  )}
-                </div>
-              </ContractContain>
+                  {/* Title + Address */}
+                  <div style={{ flexGrow: 1 }}>
+                    <LeftText>
+                      <p className="mb-0 text-black contract-title">
+                        {hero.title}
+                      </p>
+                      <p
+                        className="mb-0 text-blue wallet-address"
+                        style={{
+                          cursor: hasHeroAddress ? 'pointer' : 'default',
+                        }}
+                        onClick={() =>
+                          hasHeroAddress && onClickAddress(hero.address)
+                        }
+                      >
+                        {hasHeroAddress ? hero.address : 'Coming soon'}
+                      </p>
+                    </LeftText>
+                  </div>
 
-              {hero.market && (
-                <MarketBtn
-                  src={marketBtn}
-                  onClick={() => window.open(hero.market)}
-                />
-              )}
-            </ContractInfo>
+                  {/* Coppy icon (ẩn khi thiếu nhưng giữ layout) */}
+                  <div style={{ width: '30px' }}>
+                    {!isMobile && hasHeroAddress && (
+                      <CoppyIcon
+                        src={coppy}
+                        onClick={() => Copy(hero.address)}
+                      />
+                    )}
+                  </div>
+                </ContractContain>
+
+                {hero.market && (
+                  <MarketBtn
+                    type="button"
+                    onClick={() => window.open(hero.market)}
+                  >
+                    Visit Market
+                  </MarketBtn>
+                )}
+              </ContractInfo>
+            </Reveal>
             <RarityText>
               <br />
               BHero is an NFT, serving as a hero within the game, with various
@@ -565,62 +612,75 @@ const NFTItem: React.FC<{ id: string; network: string }> = ({
             your BHero has
             <br />
           </RarityText>
-          <ImgStats
-            src={
-              network === NETWORK.BINANCE || network === NETWORK.POLYGON
-                ? stats
-                : new_stats
-            }
-          />
+          <Reveal>
+            <ImgStats
+              src={
+                network === NETWORK.BINANCE || network === NETWORK.POLYGON
+                  ? stats
+                  : new_stats
+              }
+            />
+          </Reveal>
 
-          <ContractInfo className="mb-3">
-            <ContractContain>
-              {/* Icon + Symbol */}
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  minWidth: '60px',
-                }}
-              >
-                <CoinIcon src={bomberHouse} alt="bhouse" />
-                <p className="mb-0 text-black contract-title">{house.symbol}</p>
-              </div>
-
-              {/* Title + Address */}
-              <div style={{ flexGrow: 1 }}>
-                <LeftText>
+          <Reveal>
+            <ContractInfo className="mb-3">
+              <ContractContain>
+                {/* Icon + Symbol */}
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    minWidth: '60px',
+                  }}
+                >
+                  <CoinIcon src={bomberHouse} alt="bhouse" />
                   <p className="mb-0 text-black contract-title">
-                    {house.title}
+                    {house.symbol}
                   </p>
-                  <p
-                    className="mb-0 text-blue wallet-address"
-                    style={{ cursor: hasHouseAddress ? 'pointer' : 'default' }}
-                    onClick={() =>
-                      hasHouseAddress && onClickAddress(house.address)
-                    }
-                  >
-                    {hasHouseAddress ? house.address : 'Coming soon'}
-                  </p>
-                </LeftText>
-              </div>
+                </div>
 
-              {/* Copy icon */}
-              <div style={{ width: '30px' }}>
-                {!isMobile && hasHouseAddress && (
-                  <CoppyIcon src={coppy} onClick={() => Copy(house.address)} />
-                )}
-              </div>
-            </ContractContain>
+                {/* Title + Address */}
+                <div style={{ flexGrow: 1 }}>
+                  <LeftText>
+                    <p className="mb-0 text-black contract-title">
+                      {house.title}
+                    </p>
+                    <p
+                      className="mb-0 text-blue wallet-address"
+                      style={{
+                        cursor: hasHouseAddress ? 'pointer' : 'default',
+                      }}
+                      onClick={() =>
+                        hasHouseAddress && onClickAddress(house.address)
+                      }
+                    >
+                      {hasHouseAddress ? house.address : 'Coming soon'}
+                    </p>
+                  </LeftText>
+                </div>
 
-            {/* Visit Market button */}
-            {hasHouseMarket && (
-              <MarketBtn
-                src={marketBtn}
-                onClick={() => window.open(house.market)}
-              />
-            )}
-          </ContractInfo>
+                {/* Copy icon */}
+                <div style={{ width: '30px' }}>
+                  {!isMobile && hasHouseAddress && (
+                    <CoppyIcon
+                      src={coppy}
+                      onClick={() => Copy(house.address)}
+                    />
+                  )}
+                </div>
+              </ContractContain>
+
+              {/* Visit Market button */}
+              {hasHouseMarket && (
+                <MarketBtn
+                  type="button"
+                  onClick={() => window.open(house.market)}
+                >
+                  Visit Market
+                </MarketBtn>
+              )}
+            </ContractInfo>
+          </Reveal>
           <RarityText>
             <br />
             BHouse is an NFT, serving as the homes of heroes within the game,
@@ -629,12 +689,18 @@ const NFTItem: React.FC<{ id: string; network: string }> = ({
             quantities within the game or traded on the marketplace
             <br />
           </RarityText>
-          <ImgHouse src={houseImage} />
+          <Reveal>
+            <ImgHouse src={houseImage} />
+          </Reveal>
           <RarityText>
             The higher the tier of the house the faster your{'\n'}BHero recharge
           </RarityText>
-          <ImgHouse src={rechart} />
-          <ImgsScreenShot src={getScreenshotByNetwork(network)} />
+          <Reveal>
+            <ImgHouse src={rechart} />
+          </Reveal>
+          <Reveal>
+            <ImgsScreenShot src={getScreenshotByNetwork(network)} />
+          </Reveal>
         </Content>
       </Container>
     </section>

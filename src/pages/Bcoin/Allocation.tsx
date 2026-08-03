@@ -3,13 +3,20 @@ import styled from 'styled-components';
 import bgAllocation from 'src/assests/bcoin/bg-allocation.jpeg';
 import PieChart from 'src/assests/bcoin/pie-chart.png';
 import AllocationTable from 'src/assests/bcoin/allocation-table.png';
+import { arcadeColors, arcadeFonts } from 'src/theme/arcade';
+import { SectionTitle } from 'src/components/ui';
 
 const SectionWrapper = styled.section`
   width: 100%;
-  background: url(${bgAllocation}) no-repeat center;
+  background: linear-gradient(
+      180deg,
+      rgba(14, 17, 48, 0.92) 0%,
+      rgba(8, 10, 31, 0.94) 100%
+    ),
+    url(${bgAllocation}) no-repeat center;
   background-size: cover;
-  font-family: 'Montserrat', sans-serif;
-  color: white;
+  font-family: ${arcadeFonts.body};
+  color: ${arcadeColors.cloud};
 `;
 
 const Container = styled.div`
@@ -18,12 +25,6 @@ const Container = styled.div`
   margin-right: auto;
   padding-top: 40px;
   padding-bottom: 40px;
-`;
-
-const Title = styled.div`
-  font-size: 41px;
-  color: #ffea00;
-  text-align: center;
 `;
 
 const AllocationWrapper = styled.div`
@@ -54,7 +55,7 @@ const Allocation: React.FC<{ id: string }> = ({ id }) => {
   return (
     <SectionWrapper id={id}>
       <Container className="container">
-        <Title>Allocation</Title>
+        <SectionTitle $center>Allocation</SectionTitle>
         <AllocationWrapper>
           <AllocationItem className="col-12 col-sm-6">
             <PieChartImage src={PieChart} />

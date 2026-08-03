@@ -1,5 +1,5 @@
-import {createGlobalStyle} from "styled-components";
-import {normalize} from "styled-normalize";
+import { createGlobalStyle } from 'styled-components';
+import { normalize } from 'styled-normalize';
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -12,13 +12,13 @@ const GlobalStyle = createGlobalStyle`
   }
 
   @font-face {
-    font-family: ${({theme}) => theme.font.font_0};
-    src: ${({theme}) => theme.font.url_1};
-    src: ${({theme}) => theme.font.url_2} format("embedded-opentype"), ${({
-                                                                            theme,
-                                                                          }) => theme.font.url_3} format("woff"),
-    ${({theme}) => theme.font.url_4} format("truetype"), ${({theme}) =>
-            theme.font.url_5} format("svg");
+    font-family: ${({ theme }) => theme.font.font_0};
+    src: ${({ theme }) => theme.font.url_1};
+    src: ${({ theme }) => theme.font.url_2} format("embedded-opentype"), ${({
+  theme,
+}) => theme.font.url_3} format("woff"),
+    ${({ theme }) => theme.font.url_4} format("truetype"), ${({ theme }) =>
+  theme.font.url_5} format("svg");
     font-weight: normal;
     font-style: normal;
   }
@@ -26,8 +26,8 @@ const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
     padding: 0;
-    font-family: ${({theme}) => theme.fontFamily};
-    color: ${({theme}) => theme.color};
+    font-family: ${({ theme }) => theme.fontFamily};
+    color: ${({ theme }) => theme.color};
   }
 
   ul {

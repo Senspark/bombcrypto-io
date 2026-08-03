@@ -22,6 +22,7 @@ import UpdateHero from './UpdateHero';
 import Header from 'src/templates/worldcup/Header';
 import ContentHeader from '../../templates/worldcup/ContentHeader';
 import { NETWORK, NetworkType, networkOptions } from 'src/Contants/Contants';
+import { BackToTop } from 'src/components/ui';
 // import Advisor from './Advisor';
 
 const Main: React.FC = () => {
@@ -100,6 +101,7 @@ const Main: React.FC = () => {
       <div>
         <Footer id="footer" />
       </div>
+      <BackToTop />
       {/*<ModalAdvertisement />*/}
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 // import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import bgGuide from 'src/assests/imgRouteGuide/bgGuide.png';
@@ -8,35 +8,72 @@ import { listGuide } from 'src/data/guideline/listGuideline';
 import ModalAdvertisement from 'src/components/ModalComingSoon';
 // import { logTrackClickEventAnalytics } from 'src/libs/logEvent';
 import YouTubeVideoModal from 'src/components/YouTubeVideoModal';
+import {
+  arcadeBorder,
+  arcadeColors,
+  arcadeRadius,
+  hardShadow,
+} from 'src/theme/arcade';
+import {
+  ArcadeContainer,
+  Reveal,
+  SectionSubtitle,
+  SectionTitle,
+} from 'src/components/ui';
 
 const Wrapper = styled.section`
   width: 100%;
-  background: url(${bgGuide}) no-repeat center;
-  background-position: center;
+  position: relative;
+  background: linear-gradient(
+      180deg,
+      rgba(8, 10, 31, 0.88) 0%,
+      rgba(14, 17, 48, 0.94) 100%
+    ),
+    url(${bgGuide}) no-repeat center;
   background-size: cover;
-  padding: 130px 0;
-  font-family: 'Lato', sans-serif;
+  padding: 140px 0 90px;
+
+  @media screen and (max-width: 767px) {
+    padding: 110px 0 60px;
+  }
 `;
 
-const Title = styled.strong`
-  font-size: 80px;
-  color: #fff;
-  font-weight: bolder;
-  text-align: center;
-  display: block;
-  @media screen and (max-width: 600px) {
-    font-size: 50px;
+/** Card de cada vídeo do guia. */
+const GuideCard = styled.div`
+  background: ${arcadeColors.panel};
+  border: ${arcadeBorder.thick};
+  border-radius: ${arcadeRadius.lg};
+  box-shadow: ${hardShadow(8)};
+  overflow: hidden;
+  margin-bottom: 28px;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+
+  > a > img,
+  > img {
+    width: 100%;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+
+  &:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: ${hardShadow(11)};
+  }
+
+  /* zoom suave na thumbnail, sem vazar do card */
+  &:hover > img {
+    transform: scale(1.05);
   }
 `;
 
 const ContentDetail = styled.p`
-  color: #fff;
-  font-size: 20px;
-  font-weight: 700;
-  font-family: 'Roboto', sans-serif;
-  line-height: normal;
-  margin: 10px 0;
-  cursor: pointer;
+  color: ${arcadeColors.cloud};
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0;
+  padding: 14px 16px;
+
   @media screen and (max-width: 768px) {
     font-size: 14px;
   }
@@ -45,6 +82,7 @@ const ContentDetail = styled.p`
 const LinkYoutube = styled.a`
   text-decoration: none;
   width: 100%;
+  display: block;
 `;
 
 // const ButtonGuide = styled.div`
@@ -71,22 +109,24 @@ const Guideline: React.FC<{ id: string }> = ({ id }) => {
 
   return (
     <Wrapper id={id}>
-      <Container>
-        <Title>GUIDELINE</Title>
-        <Row className="my-5">
+      <ArcadeContainer>
+        <SectionTitle $center>Guideline</SectionTitle>
+        <SectionSubtitle $center>
+          Step-by-step videos to help you start playing and get the most out of
+          the game.
+        </SectionSubtitle>
+        <Row className="mt-4">
           {listGuide.map((v, i) => {
             return (
               <Col key={i} sm={6} md={4}>
-                <LinkYoutube target={v.target}>
-                  <img
-                    src={v.image}
-                    alt="imgGuide"
-                    className="w-100"
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => OnClick(i)}
-                  />
-                  <ContentDetail>{v.detail}</ContentDetail>
-                </LinkYoutube>
+                <Reveal delay={(i % 3) * 120}>
+                  <LinkYoutube target={v.target}>
+                    <GuideCard onClick={() => OnClick(i)}>
+                      <img src={v.image} alt="imgGuide" />
+                      <ContentDetail>{v.detail}</ContentDetail>
+                    </GuideCard>
+                  </LinkYoutube>
+                </Reveal>
               </Col>
             );
           })}
@@ -99,7 +139,7 @@ const Guideline: React.FC<{ id: string }> = ({ id }) => {
             <img src={button} alt="buttonGuide" className="w-100" />
           </Link>
         </ButtonGuide> */}
-      </Container>
+      </ArcadeContainer>
       <ModalAdvertisement isShow={show} onShow={setShowComingSoon} />
       <YouTubeVideoModal isShow={showVideo} url={url} onShow={setShowVideo} />
     </Wrapper>

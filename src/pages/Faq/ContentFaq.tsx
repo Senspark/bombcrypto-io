@@ -1,14 +1,22 @@
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
-import { Container, Col } from 'react-bootstrap';
+import { Col } from 'react-bootstrap';
 
 import { buttonList } from 'src/data/faq/listButton';
 import { tabContents } from 'src/data/faq/tab';
 import TabContentFaq from 'src/components/TabContentFaq';
+import {
+  arcadeBorder,
+  arcadeColors,
+  arcadeFonts,
+  arcadeRadius,
+  hardShadow,
+} from 'src/theme/arcade';
+import { ArcadeContainer } from 'src/components/ui';
 
 const Wrapper = styled.section`
-  border-top: 1px solid #b0b0b0;
-  font-family: barlow condensed, sans-serif !important;
+  border-top: 2px solid rgba(255, 255, 255, 0.12);
+  padding-bottom: 60px;
 `;
 
 function createCssTab() {
@@ -23,7 +31,11 @@ function createCssTab() {
      `;
     stylesTabItem += `
        .tab-toggle:nth-child(${i}):checked ~ .tab-list .tab-item:nth-child(${i}) {
-          background: rgb(249, 193, 41);
+          background: ${arcadeColors.yellow};
+          color: ${arcadeColors.ink};
+       }
+       .tab-toggle:nth-child(${i}):checked ~ .tab-list .tab-item:nth-child(${i}) .tab-trigger {
+          color: ${arcadeColors.ink};
        }
     `;
   }
@@ -45,16 +57,22 @@ const ToggleButton = styled.div`
   }
   .tab-item {
     text-align: center;
-    transition: 0.3s;
-    background: rgb(247, 155, 64);
-    margin: 10px;
-    border-radius: 5px;
+    transition: 0.2s;
+    background: ${arcadeColors.panel};
+    border: ${arcadeBorder.thin};
+    box-shadow: ${hardShadow(4)};
+    margin: 8px;
+    border-radius: ${arcadeRadius.md};
+
     &:hover {
-      background: rgb(249, 193, 41);
+      background: ${arcadeColors.panelLight};
       cursor: pointer;
+      transform: translate(-2px, -2px);
+      box-shadow: ${hardShadow(6)};
     }
+
     @media screen and (min-width: 1000px) {
-      width: 10% !important;
+      width: 12% !important;
     }
   }
   .tab-toggle {
@@ -68,12 +86,17 @@ const ToggleButton = styled.div`
 
   .tab-trigger {
     display: block;
-    padding: 5px 0;
-    color: #fff;
+    padding: 10px 4px;
+    font-family: ${arcadeFonts.display};
+    font-size: 13px;
+    letter-spacing: 1px;
+    color: ${arcadeColors.cloud};
+    cursor: pointer;
   }
 
   .tab-container {
-    padding: 15px 30px;
+    padding: 24px 8px;
+    color: ${arcadeColors.cloud};
   }
 `;
 
@@ -81,7 +104,7 @@ const ContentFaq: React.FC<{ id: string }> = ({ id }) => {
   const [isChecked, setIsChecked] = useState<number>(1);
 
   return (
-    <Container>
+    <ArcadeContainer>
       <Wrapper>
         <ToggleButton>
           {buttonList.map((v, i) => {
@@ -93,6 +116,7 @@ const ContentFaq: React.FC<{ id: string }> = ({ id }) => {
                 id={`tab${isChecked}`}
                 hidden
                 checked={i + 1 === isChecked}
+                readOnly
                 key={i}
               />
             );
@@ -125,7 +149,7 @@ const ContentFaq: React.FC<{ id: string }> = ({ id }) => {
           </div>
         </ToggleButton>
       </Wrapper>
-    </Container>
+    </ArcadeContainer>
   );
 };
 

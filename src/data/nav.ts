@@ -46,7 +46,6 @@ export const nav: NavImage[] = [
   {
     image: marketplace,
     link: 'https://market.bombcrypto.io/',
-    linkPolygon: 'https://market-polygon.senspark.com/',
     target: '_blank',
     button_name: 'marketplace',
   },
@@ -92,7 +91,6 @@ export const navText: NavText[] = [
     text: 'MARKET',
     target: '_blank',
     link: 'https://market.bombcrypto.io',
-    linkPolygon: 'https://market-polygon.senspark.com/',
     button_name: 'marketplace',
     conversion: 'market_click',
   },

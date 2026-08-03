@@ -1,16 +1,13 @@
 import React from 'react';
 
-import Navbar from 'src/pages/Home/UpdateNavbar';
 import Content from './Content';
-import SocialNetwork from 'src/pages/Home/SocialNetwork';
+import PageLayout from 'src/templates/PageLayout';
 
 const Main: React.FC = () => {
   return (
-    <div className="main">
-      <Navbar id="update-navbar" />
-      <SocialNetwork id="social" show={true} />
+    <PageLayout>
       <Content id="contentTerms" />
-    </div>
+    </PageLayout>
   );
 };
 
