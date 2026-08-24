@@ -56,6 +56,19 @@ Contributions are welcome! Please read the [Contributor License Agreement](CLA.m
 
 ---
 
+## Deployment
+
+Every pull request runs a CI check (`build`): typecheck + production build.
+Merging to `main` publishes the site automatically — there is no manual deploy step.
+
+Files under `public/` are served with their filename unchanged and a long cache
+lifetime. When you change the *contents* of one, rename it as well
+(`newHero.webm` -> `newHero-v2.webm`) and update the reference — otherwise
+visitors keep the old file for up to 30 days. Bundles under `static/` are
+content-hashed by the build, so they need no such care.
+
+---
+
 ## License
 
 Licensed under the [GNU Affero General Public License v3.0](LICENSE).
