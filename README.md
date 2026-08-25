@@ -58,6 +58,9 @@ Contributions are welcome! Please read the [Contributor License Agreement](CLA.m
 
 ## Deployment
 
+This site is deployed as a static build. Changes must not require a server at
+runtime — no SSR, no API routes, no server process of any kind.
+
 Every pull request runs a CI check (`build`): typecheck + production build.
 Merging to `main` publishes the site automatically — there is no manual deploy step.
 
