@@ -1,7 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import { Nav, Navbar, Dropdown } from 'react-bootstrap';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { snapEvent, snapTrack } from 'src/libs/snapchat';
 import styled, { keyframes } from 'styled-components';
 import ReactGA from 'react-ga';
@@ -35,7 +34,8 @@ type Props = {
 };
 
 const ContentHeader: React.FC<Props> = ({ ChangeNetWork, showSp }) => {
-  const router = useRouter();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [show, setShow] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [netWorkSelected, setNetwork] = useState(NETWORK.BINANCE);
@@ -70,14 +70,10 @@ const ContentHeader: React.FC<Props> = ({ ChangeNetWork, showSp }) => {
     setNetwork(network);
   };
 
-  const trackClickInfor = () => {
-    logTrackClickEventAnalytics('info_click');
-  };
-
   return (
     <Fragment>
       <NavItemLeftLogo>
-        <Navbar.Brand className="pt-0" onClick={() => router.push('/')}>
+        <Navbar.Brand className="pt-0" onClick={() => navigate('/')}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <div>
               <Navbar.Toggle
@@ -99,11 +95,12 @@ const ContentHeader: React.FC<Props> = ({ ChangeNetWork, showSp }) => {
         </Navbar.Brand>
       </NavItemLeftLogo>
 
-      {/* DAPPS + MARKET + GUIDE */}
+      {/* MARKET + GUIDE */}
       <Nav
         className="d-none d-lg-flex align-items-center"
         style={{ maxHeight: '100px' }}
       >
+        {/* DAPPS oculto
         <NavItemLeft>
           <NavItem
             onClick={() => {
@@ -114,6 +111,7 @@ const ContentHeader: React.FC<Props> = ({ ChangeNetWork, showSp }) => {
             DAPPS
           </NavItem>
         </NavItemLeft>
+        */}
         <NavItemLeft>
           <NavItem
             onClick={() => {
@@ -126,8 +124,8 @@ const ContentHeader: React.FC<Props> = ({ ChangeNetWork, showSp }) => {
           </NavItem>
         </NavItemLeft>
         <NavItemLeft>
-          <NavItem isActive={router.pathname === '/guide'}>
-            <Link href="/guide">GUIDE</Link>
+          <NavItem isActive={location.pathname === '/guide'}>
+            <Link to="/guide">GUIDE</Link>
           </NavItem>
         </NavItemLeft>
       </Nav>

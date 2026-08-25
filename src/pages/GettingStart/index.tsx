@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTransition, animated, config } from 'react-spring';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import bg from 'src/assests/getting_started/bg.jpeg';
 import logo from 'src/assests/imgHeader/icon.png';
@@ -40,7 +40,7 @@ const GettingStart: React.FC = () => {
       <SocialNetwork id="social" show={true} />
       <Container>
         <Menu>
-          <Link href="/">
+          <Link to="/">
             <img width={120} src={logo} alt="logo" />
           </Link>
           <div>

@@ -59,13 +59,13 @@ export const nav: NavImage[] = [
 
 export const navText: NavText[] = [
   { text: 'HOME', link: '/', target: undefined, button_name: 'home' },
-  {
+  /*{
     text: 'DAPPS',
     target: '_blank',
     link: 'https://dapp.bombcrypto.io',
     button_name: 'dapp',
     conversion: 'info_click',
-  },
+  },*/
   //{ text: 'BCOIN', target: undefined, link: '/bcoin', button_name: 'bcoin' },
   /*{
     text: 'REPORT',

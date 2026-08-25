@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Dropdown } from 'react-bootstrap';
 import { NavText, navText } from 'src/data/nav';
-import { useRouter } from 'next/router';
+import { useNavigate } from 'react-router-dom';
 import { logTrackClickEventAnalytics } from 'src/libs/logEvent';
 import PolygonIcon from 'src/assests/images/Polygon_network.png';
 import BNBIcon from 'src/assests/images/Binance-network.png';
@@ -75,7 +75,7 @@ const SubMenu: React.FC<Props> = ({
   doChangeNetwork,
   network,
 }) => {
-  const router = useRouter();
+  const navigate = useNavigate();
 
   const clickNavMenu = React.useCallback(
     (menu) => {
@@ -88,10 +88,10 @@ const SubMenu: React.FC<Props> = ({
       if (menu.target) {
         window.open(link);
       } else {
-        router.push(link);
+        navigate(link);
       }
     },
-    [network, router],
+    [network, navigate],
   );
 
   return (

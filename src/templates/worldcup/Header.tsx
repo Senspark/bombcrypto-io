@@ -78,11 +78,16 @@ const Header: React.FC<{
   );
 };
 
-/** Barra de energia na base do header: mostra quanto da página já foi rolado. */
+/**
+ * Barra de energia na base do header: mostra quanto da página já foi rolado.
+ * Fica atrás do conteúdo do navbar (z-index 0 contra o 1 do CustomNavbar) —
+ * o botão PLAY NOW passa da base do header e não pode ser cortado por ela.
+ */
 const ProgressBar = styled.div`
   position: absolute;
   left: 0;
   bottom: 0;
+  z-index: 0;
   width: 100%;
   height: 4px;
   background: linear-gradient(
@@ -93,9 +98,12 @@ const ProgressBar = styled.div`
   transform-origin: left;
   transform: scaleX(0);
   transition: transform 0.1s linear;
+  pointer-events: none;
 `;
 
 const CustomNavbar = styled(Navbar)`
+  position: relative;
+  z-index: 1;
   align-items: center;
   height: 100%;
   padding-top: 0;

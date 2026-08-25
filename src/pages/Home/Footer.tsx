@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 import { logTrackClickEventAnalytics } from 'src/libs/logEvent';
 import logo from 'src/assests/event/worldCup/logo.png';
 import {
@@ -163,17 +163,17 @@ const Footer: React.FC<{ id: string }> = ({ id }) => {
               >
                 Media Kit
               </Text>
-              <LinkText href="/guide" onClick={scrollToTop}>
+              <LinkText to="/guide" onClick={scrollToTop}>
                 Guide
               </LinkText>
             </div>
 
             <div>
               <ColumnTitle>Legal</ColumnTitle>
-              <LinkText href="/privacy-policy" onClick={scrollToTop}>
+              <LinkText to="/privacy-policy" onClick={scrollToTop}>
                 Privacy Policy
               </LinkText>
-              <LinkText href="/term-of-service" onClick={scrollToTop}>
+              <LinkText to="/term-of-service" onClick={scrollToTop}>
                 Terms Of Service
               </LinkText>
             </div>

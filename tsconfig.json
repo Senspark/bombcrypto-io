@@ -21,21 +21,12 @@
     "isolatedModules": true,
     "noEmit": true,
     "noFallthroughCasesInSwitch": true,
-    "jsx": "preserve",
-    "incremental": true
+    "jsx": "react-jsx"
   },
   "include": [
-    "src",
-    "pages",
-    "types",
-    "next-env.d.ts"
+    "src"
   ],
   "paths": {
-    "*": [
-      "interfaces/*.d.ts"
-    ]
-  },
-  "exclude": [
-    "node_modules"
-  ]
+    "*": ["interfaces/*.d.ts"]
+  }
 }
