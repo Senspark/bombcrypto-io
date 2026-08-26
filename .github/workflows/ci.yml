@@ -1,0 +1,25 @@
+name: CI
+on:
+  pull_request:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - name: Typecheck
+        run: npx tsc --noEmit
+      - name: Build
+        # CRA treats warnings as errors when CI=true, which Actions sets by default.
+        # The only warning is an autoprefixer deprecation from a vendored stylesheet,
+        # not our source. Unsetting it keeps CI identical to the deploy build.
+        # Note: with CI=false this check proves the app compiles — it does NOT
+        # prove the build is warning-free. Read the log for warnings that matter.
+        env:
+          CI: false
+        run: yarn build
