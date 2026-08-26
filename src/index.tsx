@@ -4,9 +4,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import 'src/styles/index.scss';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import 'src/libs/snapchat-pixel';
 import reportWebVitals from './reportWebVitals';
 import Application from './components/Application';
+import { initSnapchatPixel } from 'src/libs/snapchat';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 
 import {
@@ -20,6 +20,8 @@ import {
   //WorldCupPage,
   EventChristmaspieces,
 } from 'src/pages';
+
+initSnapchatPixel();
 
 ReactDOM.render(
   <React.StrictMode>

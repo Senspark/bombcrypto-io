@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { Container } from 'react-bootstrap';
 
 //import logo from 'src/assests/bcoin-token/1-logo.png';
@@ -15,6 +15,15 @@ import {
   SOLANA_CONFIG,
 } from 'src/configs/BToken';
 import { logTrackClickEventAnalytics } from 'src/libs/logEvent';
+import {
+  arcadeBorder,
+  arcadeColors,
+  arcadeFonts,
+  arcadeRadius,
+  hardShadow,
+} from 'src/theme/arcade';
+import { Reveal, SectionTitle } from 'src/components/ui';
+import { arcadeToast } from 'src/components/ui/toast';
 
 const BcoinToken: React.FC<{ id: string; networkSelected: string }> = ({
   id,
@@ -23,6 +32,10 @@ const BcoinToken: React.FC<{ id: string; networkSelected: string }> = ({
   const isMobile = isMobileDevice();
 
   function detectMetaMask() {
+    // roda também no pré-render (SSG), onde não existe window
+    if (typeof window === 'undefined') {
+      return undefined;
+    }
     if (
       typeof window.ethereum !== 'undefined' ||
       typeof window.web3 !== 'undefined'
@@ -37,18 +50,18 @@ const BcoinToken: React.FC<{ id: string; networkSelected: string }> = ({
 
   function addToMetaMask(chainId, token) {
     if (!provider) {
-      alert('Metamask not installed. Please install Metamask.');
+      arcadeToast('MetaMask not installed. Please install MetaMask.');
       return;
     }
 
     if (provider.chainId !== chainId) {
       if (chainId === BNB_CONFIG.chainId) {
-        alert(`Please switch Metamask to Binance Smartchain Network.`);
+        arcadeToast('Please switch MetaMask to BNB Chain.');
         return;
       }
 
       if (chainId === POLYGON_CONFIG.chainId) {
-        alert(`Please switch Metamask to Polygon Smartchain Network.`);
+        arcadeToast('Please switch MetaMask to Polygon.');
         return;
       }
       provider.request({
@@ -94,7 +107,7 @@ const BcoinToken: React.FC<{ id: string; networkSelected: string }> = ({
     const scanUrl = scanMap[network];
 
     if (!scanUrl || scanUrl.trim() === '') {
-      alert('Information not available.');
+      arcadeToast('Information not available.');
       return;
     }
 
@@ -110,7 +123,7 @@ const BcoinToken: React.FC<{ id: string; networkSelected: string }> = ({
 
   const onClickOpen = useCallback((link) => {
     if (!link || link.trim() === '' || link === '#') {
-      alert('Information not available.');
+      arcadeToast('Information not available.');
       return;
     }
 
@@ -126,7 +139,7 @@ const BcoinToken: React.FC<{ id: string; networkSelected: string }> = ({
     textArea.select();
     try {
       document.execCommand('copy');
-      alert(`Address Copied!`);
+      arcadeToast('Address copied!');
     } catch (err) {
       console.error('Unable to copy to clipboard', err);
     }
@@ -137,7 +150,7 @@ const BcoinToken: React.FC<{ id: string; networkSelected: string }> = ({
     if (window.isSecureContext && navigator.clipboard) {
       navigator.clipboard.writeText(text).then(
         function () {
-          alert(`Address Copied!`);
+          arcadeToast('Address copied!');
         },
         function (err) {
           console.error('Async: Could not copy text: ', err);
@@ -185,130 +198,259 @@ const BcoinToken: React.FC<{ id: string; networkSelected: string }> = ({
 
   return (
     <section id={id}>
-      <img
-        src={BcoinTokenHero}
-        style={{
-          position: 'absolute',
-          width: '30rem',
-          marginTop: '10%',
-          right: '70%',
-          transform: 'rotateY(180deg)',
-        }}
-      />
+      <HeroDecoration src={BcoinTokenHero} alt="" aria-hidden="true" />
       <Container style={{ position: 'relative' }}>
         <Contain className="detail">
-          <Title>TOKENS</Title>
+          <SectionTitle $center>Tokens</SectionTitle>
           <Body>
             {tokenBcoin && (
-              <BackgroundContract>
-                <ContractHeader className="mb-3">
-                  <div style={{ position: 'absolute' }}>
-                    <CoinIcon src={tokenBcoin.icon} alt="bcoin" />
-                    <p className="mb-0 text-black contract-title">
-                      {tokenBcoin.symbol ?? '---'}
-                    </p>
-                  </div>
-                  <ContractHeaderCenter isMobile={isMobile}>
-                    <p className="mb-0 text-black contract-title">
-                      {tokenBcoin.title ?? '---'}
-                    </p>
-                    <Ellipsis
-                      className="mb-0 text-blue wallet-address cursor-pointer"
-                      style={{ lineHeight: '2' }}
-                    >
-                      <div
+              <Reveal>
+                <BackgroundContract>
+                  <ContractHeader className="mb-3">
+                    <div style={{ position: 'absolute' }}>
+                      <CoinIcon src={tokenBcoin.icon} alt="bcoin" />
+                      <p className="mb-0 contract-title">
+                        {tokenBcoin.symbol ?? '---'}
+                      </p>
+                    </div>
+                    <ContractHeaderCenter isMobile={isMobile}>
+                      <p className="mb-0 contract-title">
+                        {tokenBcoin.title ?? '---'}
+                      </p>
+                      <Ellipsis
+                        className="mb-0 text-blue wallet-address cursor-pointer"
+                        style={{ lineHeight: '2' }}
+                      >
+                        <div
+                          onClick={() =>
+                            onClickAddress(
+                              networkSelected,
+                              tokenBcoin.address ?? '',
+                            )
+                          }
+                        >
+                          {tokenBcoin.address
+                            ? getFirstAddress(tokenBcoin.address)
+                            : 'Coming soon'}
+                        </div>
+                        <div
+                          className="ellipsisRtl"
+                          onClick={() =>
+                            onClickAddress(
+                              networkSelected,
+                              tokenBcoin.address ?? '',
+                            )
+                          }
+                        >
+                          {getTailAddress(tokenBcoin.address ?? '')}
+                        </div>
+                        {!isMobile && tokenBcoin.address && (
+                          <CoppyIcon
+                            src={coppy}
+                            onClick={() => Copy(tokenBcoin.address)}
+                          />
+                        )}
+                      </Ellipsis>
+                    </ContractHeaderCenter>
+                    {!isMobile && config.chainId && (
+                      <ButtonMetaMask
+                        onClick={() => addMetamask(config.chainId, tokenBcoin)}
+                        className="bg-blue border-0 text-white"
+                      >
+                        Add To <br /> MetaMask
+                      </ButtonMetaMask>
+                    )}
+                  </ContractHeader>
+
+                  <ContractBody style={{ margin: '15px ' }}>
+                    <div className="text-blue contract-info">
+                      <span className="text-white contract-title">Pool:</span>{' '}
+                      <span
+                        className="cursor-pointer"
                         onClick={() =>
-                          onClickAddress(
-                            networkSelected,
-                            tokenBcoin.address ?? '',
-                          )
+                          onClickOpen(tokenBcoin.pool?.link ?? '#')
                         }
                       >
-                        {tokenBcoin.address
-                          ? getFirstAddress(tokenBcoin.address)
+                        {tokenBcoin.pool?.name ?? '---'}
+                      </span>
+                    </div>
+
+                    <div className="contract-info">
+                      <span className="contract-title">
+                        {tokenBcoin.symbol ?? '---'} /{' '}
+                      </span>
+                      <span className="extra-light">
+                        {tokenBcoin.pair?.name ?? '---'}
+                      </span>
+                    </div>
+
+                    <Ellipsis className="contract-info contract-title">
+                      PAIR:
+                      <div
+                        className="extra-light"
+                        style={{ marginLeft: '4px' }}
+                      >
+                        {tokenBcoin.pair?.address
+                          ? getFirstAddress(tokenBcoin.pair.address)
                           : 'Coming soon'}
                       </div>
-                      <div
-                        className="ellipsisRtl"
-                        onClick={() =>
-                          onClickAddress(
-                            networkSelected,
-                            tokenBcoin.address ?? '',
-                          )
-                        }
-                      >
-                        {getTailAddress(tokenBcoin.address ?? '')}
+                      <div className="extra-light ellipsisRtl">
+                        {getTailAddress(tokenBcoin.pair?.address ?? '')}
                       </div>
-                      {!isMobile && tokenBcoin.address && (
+                      {!isMobile && tokenBcoin.pair?.address && (
                         <CoppyIcon
                           src={coppy}
-                          onClick={() => Copy(tokenBcoin.address)}
+                          onClick={() => Copy(tokenBcoin.pair.address)}
                         />
                       )}
                     </Ellipsis>
-                  </ContractHeaderCenter>
-                  {!isMobile && config.chainId && (
-                    <ButtonMetaMask
-                      onClick={() => addMetamask(config.chainId, tokenBcoin)}
-                      className="bg-blue border-0 text-white"
-                    >
-                      Add To <br /> MetaMask
-                    </ButtonMetaMask>
-                  )}
-                </ContractHeader>
 
-                <ContractBody style={{ margin: '15px ' }}>
-                  <div className="text-blue contract-info">
-                    <span className="text-white contract-title">Pool:</span>{' '}
-                    <span
-                      className="cursor-pointer"
-                      onClick={() => onClickOpen(tokenBcoin.pool?.link ?? '#')}
-                    >
-                      {tokenBcoin.pool?.name ?? '---'}
-                    </span>
-                  </div>
-
-                  <div className="contract-info">
-                    <span className="contract-title">
-                      {tokenBcoin.symbol ?? '---'} /{' '}
-                    </span>
-                    <span className="extra-light">
-                      {tokenBcoin.pair?.name ?? '---'}
-                    </span>
-                  </div>
-
-                  <Ellipsis className="contract-info contract-title">
-                    PAIR:
-                    <div className="extra-light" style={{ marginLeft: '4px' }}>
-                      {tokenBcoin.pair?.address
-                        ? getFirstAddress(tokenBcoin.pair.address)
-                        : 'Coming soon'}
+                    <div className="contract-info">
+                      <span className="contract-title">Liq: </span>
+                      <span className="extra-light">
+                        {tokenBcoin.pair?.liq ?? '---'}
+                      </span>
                     </div>
-                    <div className="extra-light ellipsisRtl">
-                      {getTailAddress(tokenBcoin.pair?.address ?? '')}
+                  </ContractBody>
+
+                  <ContractFooter>
+                    <FooterContain>
+                      <div className="left">
+                        <div className="bigTitle tradeColor">
+                          Trade at:
+                          {tokenBcoin.trade?.map((v, index) => (
+                            <TradeIcon
+                              key={index}
+                              src={v.icon}
+                              onClick={() => onClickOpen(v.link)}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      {tokenBcoin.audit?.link && (
+                        <div className="right">
+                          <div
+                            className="bigTitle auditedColor"
+                            onClick={() => onClickOpen(tokenBcoin.audit.link)}
+                          >
+                            Audited by:
+                            <AuditedIcon src={tokenBcoin.audit.icon} />
+                            <LinkIcon src={linkIcon} />
+                          </div>
+                        </div>
+                      )}
+                    </FooterContain>
+                  </ContractFooter>
+                </BackgroundContract>
+              </Reveal>
+            )}
+            <RarityText>{tokenBcoin?.Description}</RarityText>
+            {tokenSen && (
+              <Reveal>
+                <BackgroundContract>
+                  <ContractHeader className="mb-3">
+                    <div style={{ position: 'absolute' }}>
+                      <CoinIcon src={tokenSen.icon} alt="sen" />
+                      <p
+                        className="mb-0 contract-title"
+                        style={{ marginLeft: '8px' }}
+                      >
+                        {tokenSen.symbol}
+                      </p>
                     </div>
-                    {!isMobile && tokenBcoin.pair?.address && (
-                      <CoppyIcon
-                        src={coppy}
-                        onClick={() => Copy(tokenBcoin.pair.address)}
-                      />
+                    <ContractHeaderCenter isMobile={isMobile}>
+                      <p className="mb-0 contract-title">{tokenSen.title}</p>
+                      <Ellipsis
+                        className="mb-0 text-blue wallet-address cursor-pointer"
+                        style={{ lineHeight: '2' }}
+                      >
+                        <div
+                          onClick={() =>
+                            onClickAddress(
+                              networkSelected,
+                              tokenSen.address ?? '',
+                            )
+                          }
+                        >
+                          {getFirstAddress(tokenSen.address ?? '')}
+                        </div>
+                        <div
+                          className="ellipsisRtl"
+                          onClick={() =>
+                            onClickAddress(
+                              networkSelected,
+                              tokenSen.address ?? '',
+                            )
+                          }
+                        >
+                          {getTailAddress(tokenSen.address ?? '')}
+                        </div>
+                        {!isMobile && (
+                          <CoppyIcon
+                            src={coppy}
+                            onClick={() => Copy(tokenSen.address ?? '')}
+                          />
+                        )}
+                      </Ellipsis>
+                    </ContractHeaderCenter>
+                    {!isMobile && (
+                      <ButtonMetaMask
+                        onClick={() =>
+                          addMetamask(
+                            getConfig().chainId,
+                            getConfig().token_sen,
+                          )
+                        }
+                        className="bg-blue border-0 text-white"
+                      >
+                        Add To <br /> MetaMask
+                      </ButtonMetaMask>
                     )}
-                  </Ellipsis>
-
-                  <div className="contract-info">
-                    <span className="contract-title">Liq: </span>
-                    <span className="extra-light">
-                      {tokenBcoin.pair?.liq ?? '---'}
-                    </span>
-                  </div>
-                </ContractBody>
-
-                <ContractFooter>
-                  <FooterContain>
-                    <div className="left">
+                  </ContractHeader>
+                  <ContractBody style={{ margin: '15px ' }}>
+                    <div className="text-blue contract-info">
+                      <span className="text-white contract-title">Pool:</span>{' '}
+                      <span
+                        className="cursor-pointer"
+                        onClick={() => onClickOpen(tokenSen.pool?.link ?? '#')}
+                      >
+                        {tokenSen.pool?.name ?? 'Coming soon'}
+                      </span>
+                    </div>
+                    <div className="contract-info">
+                      <span className="contract-title">SEN / </span>
+                      <span className="extra-light">WBNB</span>
+                    </div>
+                    <Ellipsis className="contract-info contract-title">
+                      PAIR:
+                      <div
+                        className="extra-light"
+                        style={{ marginLeft: '4px' }}
+                      >
+                        {getFirstAddress(tokenSen.pair?.address ?? '')}
+                      </div>
+                      <div className="extra-light ellipsisRtl">
+                        {getTailAddress(tokenSen.pair?.address ?? '')}
+                      </div>
+                      {!isMobile && (
+                        <CoppyIcon
+                          src={coppy}
+                          onClick={() => Copy(tokenSen.pair?.address ?? '')}
+                        />
+                      )}
+                    </Ellipsis>
+                    <div className="contract-info">
+                      <span className="contract-title">Liq: </span>
+                      <span className="extra-light">
+                        {tokenSen.pair?.liq ?? '---'}
+                      </span>
+                    </div>
+                  </ContractBody>
+                  <ContractFooter>
+                    <FooterContain>
                       <div className="bigTitle tradeColor">
                         Trade at:
-                        {tokenBcoin.trade?.map((v, index) => (
+                        {tokenSen.trade?.map((v, index) => (
                           <TradeIcon
                             key={index}
                             src={v.icon}
@@ -316,145 +458,20 @@ const BcoinToken: React.FC<{ id: string; networkSelected: string }> = ({
                           />
                         ))}
                       </div>
-                    </div>
-                    {tokenBcoin.audit?.link && (
-                      <div className="right">
+                      {tokenSen.audit?.link && (
                         <div
                           className="bigTitle auditedColor"
-                          onClick={() => onClickOpen(tokenBcoin.audit.link)}
+                          onClick={() => onClickOpen(tokenSen.audit.link)}
                         >
                           Audited by:
-                          <AuditedIcon src={tokenBcoin.audit.icon} />
+                          <AuditedIcon src={tokenSen.audit.icon} />
                           <LinkIcon src={linkIcon} />
                         </div>
-                      </div>
-                    )}
-                  </FooterContain>
-                </ContractFooter>
-              </BackgroundContract>
-            )}
-            <RarityText>{tokenBcoin?.Description}</RarityText>
-            {tokenSen && (
-              <BackgroundContract>
-                <ContractHeader className="mb-3">
-                  <div style={{ position: 'absolute' }}>
-                    <CoinIcon src={tokenSen.icon} alt="sen" />
-                    <p
-                      className="mb-0 text-black contract-title"
-                      style={{ marginLeft: '8px' }}
-                    >
-                      {tokenSen.symbol}
-                    </p>
-                  </div>
-                  <ContractHeaderCenter isMobile={isMobile}>
-                    <p className="mb-0 text-black contract-title">
-                      {tokenSen.title}
-                    </p>
-                    <Ellipsis
-                      className="mb-0 text-blue wallet-address cursor-pointer"
-                      style={{ lineHeight: '2' }}
-                    >
-                      <div
-                        onClick={() =>
-                          onClickAddress(
-                            networkSelected,
-                            tokenSen.address ?? '',
-                          )
-                        }
-                      >
-                        {getFirstAddress(tokenSen.address ?? '')}
-                      </div>
-                      <div
-                        className="ellipsisRtl"
-                        onClick={() =>
-                          onClickAddress(
-                            networkSelected,
-                            tokenSen.address ?? '',
-                          )
-                        }
-                      >
-                        {getTailAddress(tokenSen.address ?? '')}
-                      </div>
-                      {!isMobile && (
-                        <CoppyIcon
-                          src={coppy}
-                          onClick={() => Copy(tokenSen.address ?? '')}
-                        />
                       )}
-                    </Ellipsis>
-                  </ContractHeaderCenter>
-                  {!isMobile && (
-                    <ButtonMetaMask
-                      onClick={() =>
-                        addMetamask(getConfig().chainId, getConfig().token_sen)
-                      }
-                      className="bg-blue border-0 text-white"
-                    >
-                      Add To <br /> MetaMask
-                    </ButtonMetaMask>
-                  )}
-                </ContractHeader>
-                <ContractBody style={{ margin: '15px ' }}>
-                  <div className="text-blue contract-info">
-                    <span className="text-white contract-title">Pool:</span>{' '}
-                    <span
-                      className="cursor-pointer"
-                      onClick={() => onClickOpen(tokenSen.pool?.link ?? '#')}
-                    >
-                      {tokenSen.pool?.name ?? 'Coming soon'}
-                    </span>
-                  </div>
-                  <div className="contract-info">
-                    <span className="contract-title">SEN / </span>
-                    <span className="extra-light">WBNB</span>
-                  </div>
-                  <Ellipsis className="contract-info contract-title">
-                    PAIR:
-                    <div className="extra-light" style={{ marginLeft: '4px' }}>
-                      {getFirstAddress(tokenSen.pair?.address ?? '')}
-                    </div>
-                    <div className="extra-light ellipsisRtl">
-                      {getTailAddress(tokenSen.pair?.address ?? '')}
-                    </div>
-                    {!isMobile && (
-                      <CoppyIcon
-                        src={coppy}
-                        onClick={() => Copy(tokenSen.pair?.address ?? '')}
-                      />
-                    )}
-                  </Ellipsis>
-                  <div className="contract-info">
-                    <span className="contract-title">Liq: </span>
-                    <span className="extra-light">
-                      {tokenSen.pair?.liq ?? '---'}
-                    </span>
-                  </div>
-                </ContractBody>
-                <ContractFooter>
-                  <FooterContain>
-                    <div className="bigTitle tradeColor">
-                      Trade at:
-                      {tokenSen.trade?.map((v, index) => (
-                        <TradeIcon
-                          key={index}
-                          src={v.icon}
-                          onClick={() => onClickOpen(v.link)}
-                        />
-                      ))}
-                    </div>
-                    {tokenSen.audit?.link && (
-                      <div
-                        className="bigTitle auditedColor"
-                        onClick={() => onClickOpen(tokenSen.audit.link)}
-                      >
-                        Audited by:
-                        <AuditedIcon src={tokenSen.audit.icon} />
-                        <LinkIcon src={linkIcon} />
-                      </div>
-                    )}
-                  </FooterContain>
-                </ContractFooter>
-              </BackgroundContract>
+                    </FooterContain>
+                  </ContractFooter>
+                </BackgroundContract>
+              </Reveal>
             )}
             <RarityText>{tokenSen?.Description}</RarityText>
           </Body>
@@ -464,19 +481,58 @@ const BcoinToken: React.FC<{ id: string; networkSelected: string }> = ({
   );
 };
 
-const ButtonMetaMask = styled.button`
-  font-size: 16px;
-  height: 50px;
-  width: 115px;
-  border-radius: 15px;
+/* flutuação preservando o espelhamento do personagem */
+const floatFlip = keyframes`
+  0%, 100% { transform: rotateY(180deg) translateY(0); }
+  50% { transform: rotateY(180deg) translateY(-16px); }
+`;
+
+/** Personagem decorativo à esquerda — flutua devagar; some em telas menores. */
+const HeroDecoration = styled.img`
   position: absolute;
-  right: 15px;
-  top: 10px;
+  width: 26rem;
+  margin-top: 8%;
+  right: 72%;
+  animation: ${floatFlip} 5s ease-in-out infinite;
+  pointer-events: none;
+  opacity: 0.9;
+
+  @media screen and (max-width: 1399px) {
+    display: none;
+  }
+`;
+
+const ButtonMetaMask = styled.button`
+  font-family: ${arcadeFonts.display};
+  font-size: 13px;
+  line-height: 1.4;
+  height: 54px;
+  width: 128px;
+  border: ${arcadeBorder.thin} !important;
+  border-radius: ${arcadeRadius.md};
+  background: ${arcadeColors.blue} !important;
+  color: ${arcadeColors.white} !important;
+  box-shadow: ${hardShadow(4)};
+  flex: 0 0 auto;
+  margin-left: auto;
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+
+  &:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: ${hardShadow(6)};
+  }
+
+  &:active {
+    transform: translate(2px, 2px);
+    box-shadow: ${hardShadow(0)};
+  }
 `;
 
 const RarityText = styled.p`
-  color: white;
-  font-size: 24px;
+  color: ${arcadeColors.smoke};
+  font-size: 17px;
+  line-height: 1.6;
   text-align: center;
   margin-top: 20px;
 `;
@@ -485,20 +541,24 @@ const Body = styled.div`
   width: 80%;
   margin-left: 10%;
 
-  @media screen and (max-width: 510px) {
+  @media screen and (max-width: 991px) {
     width: 100%;
     margin-left: 0%;
   }
 `;
 
 const BackgroundContract = styled.div`
-  background-color: #1e3cab;
-  border-radius: 20px;
+  background: ${arcadeColors.panel};
+  border: ${arcadeBorder.thick};
+  border-radius: ${arcadeRadius.lg};
+  box-shadow: ${hardShadow(8)};
+  overflow: hidden;
   margin-top: 4%;
 
   .wallet-address {
     font-size: 14px;
     font-weight: bold;
+    color: ${arcadeColors.cyan} !important;
 
     @media screen and (max-width: 600px) {
       font-size: 12px;
@@ -506,47 +566,64 @@ const BackgroundContract = styled.div`
   }
 
   .contract-title {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     font-weight: bold;
+    color: ${arcadeColors.white} !important;
   }
 
   .contract-info {
-    font-size: 18px;
+    font-size: 17px;
+    color: ${arcadeColors.cloud};
+  }
+
+  .text-blue {
+    color: ${arcadeColors.cyan} !important;
   }
 
   .extra-light {
-    font-family: 'Roboto-Light';
     font-weight: normal;
+    color: ${arcadeColors.smoke};
   }
 `;
 
+/**
+ * Faixa de topo do card. Vira flex para que ícone, dados e botão fiquem em
+ * linha sem posicionamento absoluto — o layout antigo estourava em telas
+ * estreitas.
+ */
 const ContractHeader = styled.div`
-  padding: 3px 15px 15px 15px;
-  background-color: white;
-  background-size: 100% 100%;
-  border-radius: 20px 20px 0 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 14px 15px;
+  background: ${arcadeColors.panelLight};
+  border-bottom: ${arcadeBorder.thick};
   position: relative;
+
+  /* bloco do ícone + símbolo, que vinha com position: absolute inline */
+  > div:first-child {
+    position: static !important;
+    text-align: center;
+  }
 `;
 
 const ContractBody = styled.div`
-  background-color: #152a78;
-  padding: 10px 15px;
-  border-radius: 15px;
+  background: rgba(0, 0, 0, 0.25);
+  border: ${arcadeBorder.thin};
+  padding: 12px 15px;
+  border-radius: ${arcadeRadius.md};
   justify-content: space-around;
 
   @media screen and (min-width: 0px) {
     margin: 15px;
   }
-  @media screen and (min-width: 992px) {
-    margin: 2px 5px 2px 15px;
-  }
 `;
 
 const ContractFooter = styled.div`
-  background-color: #152a78;
-  background-size: 100% 100%;
-  padding: 5px 8px;
-  border-radius: 0 0 20px 20px;
+  background: ${arcadeColors.nightDeep};
+  border-top: ${arcadeBorder.thin};
+  padding: 8px 12px;
 `;
 
 const FooterContain = styled.div`
@@ -569,18 +646,24 @@ const FooterContain = styled.div`
   }
 
   .bigTitle {
-    font-size: 25px;
-    font-weight: bold;
+    font-family: ${arcadeFonts.display};
+    font-size: 17px;
+    letter-spacing: 1px;
     text-align: left;
     margin: 0px 10px 0px 5px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
   }
 
   .tradeColor {
-    color: #63f230;
+    color: ${arcadeColors.green};
   }
 
   .auditedColor {
-    color: #e7cc00;
+    color: ${arcadeColors.yellow};
+    cursor: pointer;
   }
 `;
 
@@ -588,13 +671,19 @@ const LinkIcon = styled.img`
   display: inline;
   width: 15px;
   height: 15px;
-  margin: -16px 5px auto;
+  margin: 0 4px;
   cursor: pointer;
 `;
 
+/** Moeda gira em Y ao passar o mouse, como no jogo. */
 const CoinIcon = styled.img`
   width: 50px;
   height: 50px;
+  transition: transform 0.5s ease;
+
+  &:hover {
+    transform: rotateY(360deg);
+  }
 `;
 const CoppyIcon = styled.img`
   width: 25px;
@@ -603,28 +692,37 @@ const CoppyIcon = styled.img`
   margin: -4px 5px auto;
 `;
 const TradeIcon = styled.img`
-  //width: 45px;
-  height: 45px;
-  margin: 7px 0px 10px 5px;
+  height: 42px;
+  margin: 6px 0 6px 6px;
   cursor: pointer;
   display: inline-block;
+  border-radius: ${arcadeRadius.sm};
+  transition: transform 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px) scale(1.05);
+  }
 `;
 
 const AuditedIcon = styled.img`
-  width: 150px;
-  height: 40px;
-  margin: 10px 0px 10px 5px;
+  width: 140px;
+  height: 38px;
+  margin: 6px 0 6px 6px;
   cursor: pointer;
   display: inline-block;
 `;
 
 const ContractHeaderCenter = styled.div<{ isMobile: boolean }>`
-  margin: 7px ${(props) => (props.isMobile ? '0' : '120px')} 0 70px;
+  flex: 1 1 240px;
+  min-width: 0;
+  margin: 0;
 `;
 
 const Ellipsis = styled.div`
   display: flex;
-  flexwrap: nowrap;
+  flex-wrap: nowrap;
+  min-width: 0;
+  overflow: hidden;
 
   .ellipsisRtl {
     white-space: nowrap;
@@ -637,14 +735,6 @@ const Ellipsis = styled.div`
 const Contain = styled.div`
   margin: 0 auto;
   padding: 50px 0;
-`;
-
-const Title = styled.p`
-  color: white;
-  font-weight: 800;
-  font-size: 50px;
-  margin: 0;
-  text-align: center;
 `;
 
 export default BcoinToken;

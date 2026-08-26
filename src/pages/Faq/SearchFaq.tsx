@@ -1,72 +1,92 @@
 import React from 'react';
-import { Container } from 'react-bootstrap';
 import styled from 'styled-components';
 
+import {
+  arcadeBorder,
+  arcadeColors,
+  arcadeRadius,
+  hardShadow,
+} from 'src/theme/arcade';
+import {
+  ArcadeContainer,
+  SectionSubtitle,
+  SectionTitle,
+} from 'src/components/ui';
+
 const Wrapper = styled.section`
-  padding: 120px 0 60px 0;
-  font-family: barlow condensed, sans-serif !important;
+  padding: 140px 0 40px;
+
+  @media (max-width: 767px) {
+    padding: 110px 0 24px;
+  }
 `;
 
-const Search = styled.div`
+const SearchBox = styled.div`
   position: relative;
   width: 100%;
-`;
-
-const ContainSearch = styled.div`
-  position: absolute;
-  width: 75%;
+  max-width: 620px;
   margin: 0 auto;
-  left: 50%;
-  transform: translateX(-50%);
-`;
-
-const ButtonSearch = styled.button`
-  background: rgb(51, 50, 50);
-  color: rgb(249, 176, 67);
-  width: 42px;
-  height: 100%;
-  border-radius: 5px;
-  position: absolute;
-  f
-  top: -1px;
-  right: -1px;
 `;
 
 const InputSearch = styled.input`
   width: 100%;
-  height: 40px;
-  border: 1px solid #b0b0b0;
-  border-radius: 5px;
+  height: 52px;
+  background: ${arcadeColors.panel};
+  border: ${arcadeBorder.thick};
+  border-radius: ${arcadeRadius.md};
+  box-shadow: ${hardShadow(5)};
+  color: ${arcadeColors.white};
+  padding: 0 60px 0 16px;
+  outline: none;
 
-  padding-left: 10px;
+  &::placeholder {
+    color: ${arcadeColors.smoke};
+  }
+
+  &:focus {
+    border-color: ${arcadeColors.yellow};
+  }
 `;
 
-const ContentFaq: React.FC<{ id: string }> = ({ id }) => {
+const ButtonSearch = styled.button`
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 46px;
+  height: 44px;
+  background: ${arcadeColors.yellow};
+  color: ${arcadeColors.ink};
+  border: ${arcadeBorder.thin};
+  border-radius: ${arcadeRadius.sm};
+  cursor: pointer;
+`;
+
+const SearchFaq: React.FC<{ id: string }> = ({ id }) => {
   return (
     <Wrapper id={id}>
-      <Container>
-        <Search>
-          <div className="position-absolute w-100">
-            <ContainSearch>
-              <InputSearch placeholder="Search FAQ" />
-              <ButtonSearch>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  className="bi bi-search"
-                  viewBox="0 0 16 16"
-                >
-                  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                </svg>
-              </ButtonSearch>
-            </ContainSearch>
-          </div>
-        </Search>
-      </Container>
+      <ArcadeContainer>
+        <SectionTitle $center>FAQ</SectionTitle>
+        <SectionSubtitle $center>
+          Find quick answers about the game, tokens, NFTs and the marketplace.
+        </SectionSubtitle>
+        <SearchBox>
+          <InputSearch placeholder="Search FAQ" />
+          <ButtonSearch type="button" aria-label="Search">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              className="bi bi-search"
+              viewBox="0 0 16 16"
+            >
+              <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+            </svg>
+          </ButtonSearch>
+        </SearchBox>
+      </ArcadeContainer>
     </Wrapper>
   );
 };
 
-export default ContentFaq;
+export default SearchFaq;

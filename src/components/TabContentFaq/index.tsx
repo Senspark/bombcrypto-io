@@ -1,40 +1,47 @@
 import React from 'react';
 import { Tabs } from 'src/data/faq/tab';
 import styled from 'styled-components';
+import {
+  arcadeBorder,
+  arcadeColors,
+  arcadeFonts,
+  arcadeRadius,
+  hardShadow,
+} from 'src/theme/arcade';
 
 type Props = {
   list: Tabs[];
 };
 
+const markerStyles = `
+  position: absolute;
+  color: ${arcadeColors.ink};
+  background: ${arcadeColors.yellow};
+  border: ${arcadeBorder.thin};
+  border-radius: ${arcadeRadius.sm};
+  font-family: ${arcadeFonts.display};
+  font-size: 16px;
+  line-height: 1;
+  text-align: center;
+  padding: 6px 10px;
+  right: 14px;
+  top: 12px;
+`;
+
 const TabContent = styled.div`
   padding: 0;
   margin: 0 auto;
+
   details > summary::after {
-    position: absolute;
+    ${markerStyles};
     content: '+';
-    color: #fff;
-    background: rgb(247, 155, 64);
-    font-size: 20px;
-    text-align: center;
-    border-radius: 5px;
-    padding: 2px 10px;
-    right: 16px;
-    top: 4px;
   }
   details[open] > summary::after {
-    position: absolute;
+    ${markerStyles};
     content: '-';
-    color: #fff;
-    background: rgb(247, 155, 64);
-    font-size: 20px;
-    text-align: center;
-    border-radius: 5px;
-    padding: 2px 10px;
-    right: 16px;
-    top: 4px;
+
     @media screen and (max-width: 600px) {
-      right: 0 !important;
-      margin: 0 20px;
+      right: 10px;
     }
   }
   details > summary {
@@ -47,28 +54,38 @@ const TabContent = styled.div`
 `;
 
 const Detail = styled.details`
-  border: 1px solid #b0b0b0;
-  border-radius: 5px;
-  margin: 10px 0;
+  background: ${arcadeColors.panel};
+  border: ${arcadeBorder.thin};
+  border-radius: ${arcadeRadius.md};
+  box-shadow: ${hardShadow(4)};
+  margin: 12px 0;
+  overflow: hidden;
+
   p {
-    color: #777;
-    font-size: 14px;
-    margin-bottom: 10px;
-    padding-left: 5px;
+    color: ${arcadeColors.smoke};
+    font-size: 15px;
+    line-height: 1.7;
+    margin-bottom: 0;
+    padding: 0 16px 14px;
+  }
+
+  a {
+    color: ${arcadeColors.cyan};
   }
 `;
 
 const Summary = styled.summary`
   font-size: 16px;
   font-weight: 600;
-  padding: 10px 5px;
-  color: #777;
+  padding: 14px 60px 14px 16px;
+  color: ${arcadeColors.white};
   outline: none;
   text-align: left;
   cursor: pointer;
   position: relative;
-  @media screen and (max-width: 600px) {
-    padding-right: 50px;
+
+  &:hover {
+    color: ${arcadeColors.yellow};
   }
 `;
 

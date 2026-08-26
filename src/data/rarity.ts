@@ -85,11 +85,11 @@ export const rarityExtra: RarityImage[] = [
 export const RarityConfig: RarityConfigType = {
   BINANCE: {
     main: rarity,
-    extra: null,
+    extra: rarityExtra,
   },
   POLYGON: {
     main: rarity,
-    extra: null,
+    extra: rarityExtra,
   },
   TON: {
     main: rarityWithoutS,

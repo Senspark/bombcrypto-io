@@ -1,6 +1,12 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import arrow from '../../assests/updateHome/Ô button/arrow.png';
+import {
+  arcadeBorder,
+  arcadeColors,
+  arcadeFonts,
+  arcadeRadius,
+  hardShadow,
+} from 'src/theme/arcade';
 
 type Props = {
   setShowInVideo: (isShow: boolean) => void;
@@ -38,57 +44,85 @@ const Drawer: React.FC<Props> = ({ isShow, setShowInVideo }) => {
 
   return (
     <Fragment>
-      <ImgArrow
-        className="d-none d-sm-block"
-        show={CheckShow()}
-        src={arrow}
-        onClick={onClickShow}
-      />
-      <MainButton
-        className="d-block d-sm-none"
+      <ToggleButton
+        type="button"
+        aria-label={CheckShow() ? 'Hide social links' : 'Show social links'}
+        className="d-none d-sm-flex"
         show={CheckShow()}
         onClick={onClickShow}
       >
-        <TextBtn show={CheckShow()}>{CheckShow() ? 'X' : '+'}</TextBtn>
+        <Chevron show={CheckShow()}>◀</Chevron>
+      </ToggleButton>
+      <MainButton
+        className="d-flex d-sm-none"
+        show={CheckShow()}
+        onClick={onClickShow}
+      >
+        <TextBtn show={CheckShow()}>{CheckShow() ? '✕' : '+'}</TextBtn>
       </MainButton>
     </Fragment>
   );
 };
 
-const ImgArrow = styled.img<{ show: boolean }>`
-  right: 10px;
+/** Aba fixa na borda direita que mostra/esconde a barra de redes sociais. */
+const ToggleButton = styled.button<{ show: boolean }>`
   position: fixed;
-  z-index: 3000;
+  right: 0;
   top: 50%;
-  transform: translateY(-50%)
-    ${({ show }) => (show ? 'rotate(0deg)' : 'rotate(180deg)')};
+  transform: translateY(-50%);
+  z-index: 3000;
+  width: 34px;
+  height: 56px;
+  align-items: center;
+  justify-content: center;
+  background: ${arcadeColors.yellow};
+  border: ${arcadeBorder.thin};
+  border-right: none;
+  border-radius: ${arcadeRadius.md} 0 0 ${arcadeRadius.md};
+  box-shadow: ${hardShadow(4)};
   cursor: pointer;
-  transition: transform ease-in 0.5s;
+  transition: background 0.15s ease, width 0.15s ease;
+
+  &:hover {
+    background: ${arcadeColors.white};
+    width: 38px;
+  }
 `;
 
-const MainButton = styled.div<{ show: boolean }>`
-  display: flex;
+const Chevron = styled.span<{ show: boolean }>`
+  font-size: 16px;
+  line-height: 1;
+  color: ${arcadeColors.ink};
+  display: inline-block;
+  transform: rotate(${({ show }) => (show ? '180deg' : '0deg')});
+  transition: transform ease-in 0.3s;
+`;
+
+const MainButton = styled.button<{ show: boolean }>`
   right: 10px;
   position: fixed;
   z-index: 3000;
   top: 93%;
   cursor: pointer;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  border-radius: ${arcadeRadius.md};
   transform: translateY(-50%);
-  background-color: rgba(0, 67, 155, 0.48);
-  color: white;
-  font-size: 30px;
-  border: none;
-  font-weight: bold;
+  background: ${arcadeColors.yellow};
+  border: ${arcadeBorder.thin};
+  box-shadow: ${hardShadow(4)};
+  color: ${arcadeColors.ink};
+  font-family: ${arcadeFonts.display};
+  font-size: 20px;
   text-align: center;
 `;
 
 const TextBtn = styled.span<{ show: boolean }>`
   display: inline-block;
-  transform: translateY(-5%)
-    ${({ show }) => (show ? 'rotate(0deg)' : 'rotate(360deg)')};
+  line-height: 1;
+  transform: rotate(${({ show }) => (show ? '0deg' : '360deg')});
   transition: transform ease-in 0.3s;
 `;
 

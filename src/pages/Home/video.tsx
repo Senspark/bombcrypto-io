@@ -40,6 +40,13 @@ export const Video: React.FC<Props> = ({
   const timeoutRef = useRef<any>(null);
 
   const [isReady, setIsReady] = useState(false);
+  // o player monta um iframe, que o pré-render (SSG) não consegue produzir;
+  // renderizá-lo só depois da hidratação evita divergência de HTML
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (isVisible && isReady) {
@@ -66,20 +73,22 @@ export const Video: React.FC<Props> = ({
 
   return (
     <Contain tabIndex={0}>
-      <ReactPlayer
-        url={url}
-        controls={false}
-        playing={isVisible && isReady}
-        muted={isMuted}
-        width="100vw"
-        height="56.5vw"
-        style={{
-          pointerEvents: 'none',
-          userSelect: 'none',
-        }}
-        onReady={onLoadReady}
-        onEnded={showEnded}
-      />
+      {mounted && (
+        <ReactPlayer
+          url={url}
+          controls={false}
+          playing={isVisible && isReady}
+          muted={isMuted}
+          width="100vw"
+          height="56.5vw"
+          style={{
+            pointerEvents: 'none',
+            userSelect: 'none',
+          }}
+          onReady={onLoadReady}
+          onEnded={showEnded}
+        />
+      )}
     </Contain>
   );
 };

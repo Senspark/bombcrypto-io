@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
-import { getAnalytics } from 'firebase/analytics';
+import { Analytics, getAnalytics } from 'firebase/analytics';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -18,4 +18,19 @@ const firebaseConfig = {
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
-export const analytics = getAnalytics(app);
+
+/**
+ * Analytics só existe no navegador — getAnalytics() acessa window e quebraria
+ * o pré-render das páginas. Por isso é criado sob demanda, no primeiro uso.
+ */
+let analyticsInstance: Analytics | null = null;
+
+export const getAnalyticsClient = (): Analytics | null => {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+  if (!analyticsInstance) {
+    analyticsInstance = getAnalytics(app);
+  }
+  return analyticsInstance;
+};

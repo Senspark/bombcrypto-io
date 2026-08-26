@@ -46,7 +46,6 @@ export const nav: NavImage[] = [
   {
     image: marketplace,
     link: 'https://market.bombcrypto.io/',
-    linkPolygon: 'https://market-polygon.senspark.com/',
     target: '_blank',
     button_name: 'marketplace',
   },
@@ -60,13 +59,13 @@ export const nav: NavImage[] = [
 
 export const navText: NavText[] = [
   { text: 'HOME', link: '/', target: undefined, button_name: 'home' },
-  {
+  /*{
     text: 'DAPPS',
     target: '_blank',
     link: 'https://dapp.bombcrypto.io',
     button_name: 'dapp',
     conversion: 'info_click',
-  },
+  },*/
   //{ text: 'BCOIN', target: undefined, link: '/bcoin', button_name: 'bcoin' },
   /*{
     text: 'REPORT',
@@ -92,7 +91,6 @@ export const navText: NavText[] = [
     text: 'MARKET',
     target: '_blank',
     link: 'https://market.bombcrypto.io',
-    linkPolygon: 'https://market-polygon.senspark.com/',
     button_name: 'marketplace',
     conversion: 'market_click',
   },

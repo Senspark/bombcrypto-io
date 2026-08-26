@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import ReactPixel from 'react-snapchat-pixel';
+import { snapEvent, snapTrack } from 'src/libs/snapchat';
 import ReactGA from 'react-ga';
 
 import React from 'react';
@@ -11,46 +11,60 @@ import {
   logTrackClickEventAnalytics,
 } from 'src/libs/logEvent';
 import { logEvenAppsflyer } from '../../libs/appsflyer';
-import bgPartner from 'src/assests/menuSocial_2024/social_board.png';
+import {
+  arcadeBorder,
+  arcadeColors,
+  arcadeRadius,
+  hardShadow,
+} from 'src/theme/arcade';
+
+const boardStyles = `
+  background: ${arcadeColors.panel};
+  border: ${arcadeBorder.thick};
+  border-radius: ${arcadeRadius.lg};
+  box-shadow: ${hardShadow(6)};
+  padding: 10px 8px;
+  z-index: 999;
+  position: fixed;
+  transition: transform ease-in 0.5s;
+`;
 
 const Wrapper = styled.ul<{ show: boolean }>`
-  position: fixed;
-  background: url(${bgPartner}) no-repeat center;
-  background-size: 100% 100%;
-  padding: 8px 3px;
+  ${boardStyles};
   right: 80px;
-  z-index: 999;
-  transform: translateY(-49%)
-    ${({ show }) => (show ? 'translateX(0)' : 'translateX(300%)')};
-  transition: transform ease-in 0.5s;
   top: 50%;
+  transform: translateY(-50%)
+    ${({ show }) => (show ? 'translateX(0)' : 'translateX(300%)')};
 `;
 const WrapperSp = styled.ul<{ show: boolean }>`
-  position: fixed;
+  ${boardStyles};
   top: 50%;
-  background: url(${bgPartner}) no-repeat center;
-  background-size: 100% 100%;
-  padding: 8px 3px;
   right: 5px;
-  z-index: 999;
-  transform: translateY(-22%)
+  padding: 6px 4px;
+  transform: translateY(-50%)
     ${({ show }) => (show ? 'translateX(0)' : 'translateX(150%)')};
-  transition: transform ease-in 0.5s;
 `;
 
 const ImgSocial = styled.img`
-  width: 60px;
-  height: 60px;
-  padding: 3px;
+  width: 52px;
+  height: 52px;
+  padding: 4px;
+  border-radius: ${arcadeRadius.md};
+  transition: transform 0.15s ease, background 0.15s ease;
+
   &:hover {
-    border: 3px solid #724fc7;
-    border-radius: 30px;
+    background: ${arcadeColors.yellow};
+    transform: scale(1.08);
   }
 `;
 
 const Li = styled.li`
   list-style: none;
   margin-bottom: 6px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 `;
 
 const SocialNetwork: React.FC<{ id: string; show: boolean }> = ({
@@ -100,9 +114,9 @@ const SocialNetwork: React.FC<{ id: string; show: boolean }> = ({
         break;
     }
     logTrackClickEventAnalytics('community_click');
-    ReactPixel.snaptr('track', snap_event_type);
+    snapEvent('track', snap_event_type);
     ReactGA.ga('send', 'event', event_name, 'community_click', 'Campaign', '0');
-    ReactPixel.track(`click-${event_name}`, {
+    snapTrack(`click-${event_name}`, {
       content_name: 'community_click',
       content_category: 'community_click',
       content_ids: [''],

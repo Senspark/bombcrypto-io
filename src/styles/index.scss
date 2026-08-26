@@ -12,6 +12,13 @@ $dark-blue: #172031;
 $bold-blue: #001f5f;
 $yellow: #ffcc00;
 $purple-dark: #240444;
+
+// paleta arcade — espelha src/theme/arcade.ts
+$arcade-night: #0e1130;
+$arcade-night-deep: #080a1f;
+$arcade-panel: #1b2050;
+$arcade-yellow: #ffd23f;
+$arcade-ink: #05060f;
 $navbar-dark-hover-color: $primary !default;
 $navbar-dark-active-color: $primary;
 $navbar-dark-color: $white;
@@ -234,8 +241,9 @@ li {
 }
 
 #bcoin_token {
-  background: url('/assests/bcoin-token/1-BG.png') no-repeat center;
-  background-size: cover;
+  position: relative;
+  overflow: hidden;
+  background: $arcade-night;
   color: $white;
   .detail {
     @media screen and (min-width: 1320px) {
@@ -357,9 +365,7 @@ li {
 }
 
 #item {
-  background: url('/assests/NFTItems/bgItem.png') no-repeat center;
-  background-position: center;
-  background-size: cover;
+  background: $arcade-night-deep;
   .detail {
     @media screen and (min-width: 1320px) {
       width: 900px;
@@ -460,17 +466,15 @@ li {
   }
 }
 
-@import '/node_modules/bootstrap/scss/functions';
-@import '/node_modules/bootstrap/scss/variables';
-@import '/node_modules/bootstrap/scss/mixins';
-@import '/node_modules/bootstrap/scss/root';
-@import '/node_modules/bootstrap/scss/reboot';
-@import '/node_modules/bootstrap/scss/type';
-@import '/node_modules/bootstrap/scss/images';
-@import '/node_modules/bootstrap/scss/containers';
-@import '/node_modules/bootstrap/scss/grid';
-@import '/node_modules/bootstrap/scss/bootstrap';
-@import url('https://fonts.googleapis.com/css2?family=Bungee&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@100;300;400&display=swap');
-@import url('https://fonts.googleapis.com/css?family=Lato:400,700');
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;900&display=swap');
+// resolvidos via sassOptions.includePaths (node_modules) no next.config.js
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/mixins';
+@import 'bootstrap/scss/root';
+@import 'bootstrap/scss/reboot';
+@import 'bootstrap/scss/type';
+@import 'bootstrap/scss/images';
+@import 'bootstrap/scss/containers';
+@import 'bootstrap/scss/grid';
+@import 'bootstrap/scss/bootstrap';
+// fontes do Google agora são <link> no pages/_app.tsx

@@ -14,13 +14,18 @@ import LaToken from 'src/assests/bcoin/latoken-1.png';
 import PooCoin from 'src/assests/bcoin/poocoin.png';
 import DexTools from 'src/assests/bcoin/dex-tools-1.png';
 import { Col } from 'react-bootstrap';
+import { arcadeColors, arcadeFonts } from 'src/theme/arcade';
 
+/**
+ * O fundo desta seção já contém os títulos e a moldura, e os blocos são
+ * posicionados por margens calibradas com a imagem — por isso ele é mantido.
+ */
 const SectionWrapper = styled.section`
   width: 100%;
   background: url(${bgAvailable}) no-repeat center;
   background-size: cover;
-  font-family: 'Montserrat', sans-serif;
-  color: white;
+  font-family: ${arcadeFonts.body};
+  color: ${arcadeColors.white};
   overflow: hidden;
 `;
 

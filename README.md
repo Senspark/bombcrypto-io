@@ -35,13 +35,13 @@ yarn test           # react-scripts test
 ```
 src/
 ├── pages/          # route-level pages (Home, Bcoin, Faq, GettingStart, WorldCup, ...)
-├── components/      # shared UI components
+├── components/      # shared UI components (components/ui = arcade design system)
 ├── contracts/        # smart contract ABIs / bindings
 ├── configs/          # chain list, token & contract configs
 ├── data/             # static content (FAQ, socials, notifications, ...)
 ├── libs/              # firebase, analytics, other integrations
 ├── services/          # API / web3 service layer
-└── theme/             # global styles & theme
+└── theme/             # global styles & arcade design tokens
 ```
 
 ---

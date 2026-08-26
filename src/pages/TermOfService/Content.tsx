@@ -1,45 +1,48 @@
 import React from 'react';
-import { Container } from 'react-bootstrap';
 import styled from 'styled-components';
 
 import { content } from 'src/data/termOfSevices/content';
+import { arcadeColors, arcadeFonts } from 'src/theme/arcade';
+import { ArcadeContainer, SectionTitle } from 'src/components/ui';
 
 const Wrapper = styled.section`
-  padding: 100px 0;
-  font-family: barlow condensed, sans-serif;
-  color: #777;
-`;
+  padding: 140px 0 80px;
+  color: ${arcadeColors.cloud};
 
-const Title = styled.strong`
-  text-align: center;
-  font-size: 2.25em;
-  display: block;
-  line-height: 1.6;
-  font-weight: bolder;
+  @media (max-width: 767px) {
+    padding: 110px 0 56px;
+  }
 `;
 
 const ContentDetail = styled.div`
-  padding-top: 30px;
+  padding-top: 24px;
 `;
 
 const Heading = styled.strong`
-  line-height: 1.6;
-  font-weight: bolder;
-  padding-bottom: 50px;
-  font-size: 1.25em;
+  display: block;
+  margin-top: 32px;
+  font-family: ${arcadeFonts.display};
+  font-size: 18px;
+  letter-spacing: 1px;
+  color: ${arcadeColors.yellow};
 `;
 
 const Detail = styled.p`
-  font-size: 1.25em;
-  font-weight: 400;
-  margin: 20px 0;
+  font-size: 15px;
+  line-height: 1.8;
+  color: ${arcadeColors.smoke};
+  margin: 12px 0;
+
+  &:empty {
+    display: none;
+  }
 `;
 
 const Content: React.FC<{ id: string }> = ({ id }) => {
   return (
     <Wrapper id={id}>
-      <Title>Terms Of Service – Bomb Crypto</Title>
-      <Container>
+      <ArcadeContainer>
+        <SectionTitle>Terms Of Service</SectionTitle>
         <ContentDetail>
           {content.map((v, i) => {
             return (
@@ -53,7 +56,7 @@ const Content: React.FC<{ id: string }> = ({ id }) => {
             );
           })}
         </ContentDetail>
-      </Container>
+      </ArcadeContainer>
     </Wrapper>
   );
 };

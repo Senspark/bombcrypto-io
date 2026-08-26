@@ -17,6 +17,7 @@ import arrow from 'src/assests/imgHeader/arrow.png';
 import { logTrackClickEventAnalytics } from 'src/libs/logEvent';
 
 import list from './data';
+import { arcadeBorder, arcadeColors, arcadeFonts } from 'src/theme/arcade';
 import SocialNetwork from 'src/pages/Home/SocialNetwork';
 import ModalAdvertisement from '../../components/ModalComingSoon';
 
@@ -219,18 +220,28 @@ const StyleSlide = styled.div`
 `;
 
 const Container = styled.div`
-  background: url(${bg});
+  background: linear-gradient(
+      180deg,
+      rgba(14, 17, 48, 0.85) 0%,
+      rgba(8, 10, 31, 0.9) 100%
+    ),
+    url(${bg});
   min-height: 100vh;
+  color: ${arcadeColors.cloud};
 
   > * {
-    font-family: 'Montserrat', serif;
+    font-family: ${arcadeFonts.body};
   }
 `;
 
 const Menu = styled.div`
-  background: #007aff;
-  padding: 8px 24px;
-  border-bottom: 4px solid white;
+  background: linear-gradient(
+    180deg,
+    ${arcadeColors.panel} 0%,
+    ${arcadeColors.nightDeep} 100%
+  );
+  padding: 10px 24px;
+  border-bottom: ${arcadeBorder.thick};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -272,7 +283,7 @@ const PointItem = styled.div<{ isend?: boolean }>`
         top: 1.5vw;
         width: 60%;
         height: 3px;
-        background: black;
+        background: ${arcadeColors.yellow};
       }
     `}
   @media screen and (max-width: 600px) {

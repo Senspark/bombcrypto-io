@@ -2,101 +2,123 @@ import React, { useCallback, useState } from 'react';
 import { Col, Container, Row, Tab, Tabs } from 'react-bootstrap';
 import styled from 'styled-components';
 
-import bg from 'src/assests/images/noticeBg.png';
 import { notifications } from 'src/data/notification';
 import bgNew from 'src/assests/images/notification/new.png';
 import { logTrackClickEventAnalytics } from 'src/libs/logEvent';
+import {
+  arcadeBorder,
+  arcadeColors,
+  arcadeFonts,
+  arcadeRadius,
+  hardShadow,
+} from 'src/theme/arcade';
+import { Reveal, SectionTitle } from 'src/components/ui';
 
 const Wrapper = styled.div`
-  background-color: #1697d9;
-  padding: 50px 0 100px 0;
+  background: ${arcadeColors.night};
+  padding: 80px 0;
+  font-family: ${arcadeFonts.body};
+
   @media screen and (max-width: 500px) {
-    padding: 50px 0;
+    padding: 48px 0;
   }
   .tab-content {
     min-height: 180px;
   }
 `;
 
+/** Painel com borda grossa e sombra dura, no lugar da moldura em imagem. */
 const Round = styled(Col)`
-  background: url(${bg}) center no-repeat;
-  background-position: top center;
-  background-size: 100% 100%;
+  background: ${arcadeColors.panel};
+  border: ${arcadeBorder.thick};
+  border-radius: ${arcadeRadius.lg};
+  box-shadow: ${hardShadow(8)};
+  overflow: hidden;
+  /* sem o padding padrão da coluna: a imagem cobre o quadro até a borda */
+  padding: 0;
+
+  /* o conteúdo (inclusive o wrapper do Reveal) ocupa o quadro inteiro,
+     mesmo quando o card ao lado é mais alto */
+  > div {
+    height: 100%;
+  }
 `;
 
 const ContentImg = styled.div`
-  padding: 15px 5px;
+  padding: 0;
+  height: 100%;
+
   img {
     width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
 `;
 
 const Content = styled.div`
-  padding: 20px 15px 20px 30px;
-  .nav-link {
-    color: #af7c71;
-    font-weight: 900;
-    font-size: 14px;
-    padding-left: 0px;
-    padding-right: 1rem;
-  }
+  padding: 20px 24px;
+
   .nav-tabs {
-    border-bottom: none;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.12);
+    gap: 4px;
+  }
+  .nav-link {
+    font-family: ${arcadeFonts.display};
+    color: ${arcadeColors.smoke};
+    font-size: 13px;
+    letter-spacing: 1px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: ${arcadeRadius.sm} ${arcadeRadius.sm} 0 0;
   }
   .nav-tabs .nav-link.active {
-    background: transparent;
+    background: ${arcadeColors.yellow};
     border-color: transparent;
-    color: #1697d9;
+    color: ${arcadeColors.ink};
   }
-  .nav-tabs .nav-link {
-    &:hover {
-      border-color: transparent;
-      outline: none;
-    }
+  .nav-tabs .nav-link:hover {
+    border-color: transparent;
+    outline: none;
+    color: ${arcadeColors.yellow};
   }
+  .nav-tabs .nav-link.active:hover {
+    color: ${arcadeColors.ink};
+  }
+
   @media screen and (max-width: 500px) {
-    padding-left: 5px;
+    padding: 16px 14px;
   }
 `;
 
 const ContentTab = styled(Row)`
   justify-content: space-between !important;
   align-items: baseline;
-  border-bottom: 1px solid #af7c71;
-  margin: 5px 0px 5px 2px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  margin: 0;
+  padding: 10px 0;
 `;
 
 const ContentTabDetail = styled.a`
-  color: #af7c71;
-  font-size: 14px;
+  color: ${arcadeColors.cloud};
+  font-size: 15px;
   text-decoration: none;
-  font-weight: 700;
+  transition: color 0.15s ease;
 
   &:hover {
-    color: #1697d9;
+    color: ${arcadeColors.yellow};
   }
   @media screen and (max-width: 500px) {
-    font-size: 10px;
+    font-size: 12px;
   }
 `;
 
 const Time = styled(Col)`
-  color: #af7c71;
-  font-size: 14px;
-  font-weight: 700;
+  color: ${arcadeColors.smoke};
+  font-size: 13px;
+  text-align: right;
   @media screen and (max-width: 500px) {
     font-size: 10px;
-  }
-`;
-
-const Title = styled.div`
-  font-size: 45px;
-  font-weight: bold;
-  color: white;
-  text-align: center;
-  margin-bottom: 30px;
-  @media screen and (max-width: 768px) {
-    font-size: 35px !important;
   }
 `;
 
@@ -105,65 +127,71 @@ const Notification: React.FC<{ id: string }> = ({ id }) => {
 
   const handleOnchangeBackground = useCallback((event) => {
     let newValue = notifications.find((v) => v.eventKey === event);
-    if (newValue) setImg(newValue.img);
+    if (newValue?.img) setImg(newValue.img);
   }, []);
 
   return (
     <section id={id}>
       <Wrapper>
         <Container>
-          <Title>ANNOUNCEMENTS</Title>
+          <SectionTitle $center style={{ marginBottom: '36px' }}>
+            Announcements
+          </SectionTitle>
           <Row className="justify-content-center rowContent">
             <Round xs={12} xl={5} className="mb-3 mb-xl-0 mx-xl-2">
-              <ContentImg>
-                <img src={img} alt="" />
-              </ContentImg>
+              <Reveal>
+                <ContentImg>
+                  <img src={img} alt="" />
+                </ContentImg>
+              </Reveal>
             </Round>
             <Round xs={12} xl={5} className="mx-xl-2">
-              <Content>
-                <Tabs
-                  defaultActiveKey="new"
-                  id="uncontrolled-tab-example"
-                  className="mb-2"
-                  onSelect={(e) => handleOnchangeBackground(e)}
-                >
-                  {notifications.map((v, i) => {
-                    return (
-                      <Tab
-                        eventKey={v.eventKey}
-                        title={v.title}
-                        key={`${v.title}${i}`}
-                        style={
-                          v.content.length > 5
-                            ? { height: '180px', overflowY: 'scroll' }
-                            : undefined
-                        }
-                      >
-                        {v.content.map((item, index) => {
-                          return (
-                            <ContentTab key={index}>
-                              <Col xs={10} className="px-0">
-                                <ContentTabDetail
-                                  href={item.href}
-                                  target="_blank"
-                                  onClick={() =>
-                                    logTrackClickEventAnalytics(
-                                      'community_click',
-                                    )
-                                  }
-                                >
-                                  {item.des}
-                                </ContentTabDetail>
-                              </Col>
-                              <Time xs={2}>{item.date}</Time>
-                            </ContentTab>
-                          );
-                        })}
-                      </Tab>
-                    );
-                  })}
-                </Tabs>
-              </Content>
+              <Reveal delay={120}>
+                <Content>
+                  <Tabs
+                    defaultActiveKey="new"
+                    id="uncontrolled-tab-example"
+                    className="mb-2"
+                    onSelect={(e) => handleOnchangeBackground(e)}
+                  >
+                    {notifications.map((v, i) => {
+                      return (
+                        <Tab
+                          eventKey={v.eventKey}
+                          title={v.title}
+                          key={`${v.title}${i}`}
+                          style={
+                            v.content.length > 5
+                              ? { height: '180px', overflowY: 'scroll' }
+                              : undefined
+                          }
+                        >
+                          {v.content.map((item, index) => {
+                            return (
+                              <ContentTab key={index}>
+                                <Col xs={10} className="px-0">
+                                  <ContentTabDetail
+                                    href={item.href}
+                                    target="_blank"
+                                    onClick={() =>
+                                      logTrackClickEventAnalytics(
+                                        'community_click',
+                                      )
+                                    }
+                                  >
+                                    {item.des}
+                                  </ContentTabDetail>
+                                </Col>
+                                <Time xs={2}>{item.date}</Time>
+                              </ContentTab>
+                            );
+                          })}
+                        </Tab>
+                      );
+                    })}
+                  </Tabs>
+                </Content>
+              </Reveal>
             </Round>
           </Row>
         </Container>

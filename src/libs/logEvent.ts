@@ -1,40 +1,41 @@
 import _ from 'lodash';
-import { analytics } from './firebase';
-import { logEvent, isSupported } from 'firebase/analytics';
+import { getAnalyticsClient } from './firebase';
+import { logEvent } from 'firebase/analytics';
 
 interface EventParams {
+  [key: string]: unknown;
   category: string;
   button_name: string;
 }
 
-export const logEventAnalytics = (eventName, params: EventParams) => {
-  if (!isSupported) {
+/** No servidor (pré-render) não há analytics: as chamadas viram no-op. */
+const track = (eventName: string, params?: Record<string, unknown>) => {
+  const analytics = getAnalyticsClient();
+  if (!analytics) {
     return;
   }
-
   logEvent(analytics, eventName, params);
 };
 
-export const logTrackClickEventAnalytics = (eventName) => {
-  if (!isSupported) {
-    return;
-  }
+export const logEventAnalytics = (eventName, params: EventParams) => {
+  track(eventName, params);
+};
 
-  logEvent(analytics, eventName);
+export const logTrackClickEventAnalytics = (eventName) => {
+  track(eventName);
 };
 
 export const logTrackClick = (buttonName: string) => {
-  if (!isSupported) {
-    return;
-  }
-  const scene = getSceneByRouter();
-  logEvent(analytics, 'track_click_website', {
-    category: scene,
+  track('track_click_website', {
+    category: getSceneByRouter(),
     button_name: buttonName,
   });
 };
 
 export const getSceneByRouter = () => {
+  if (typeof window === 'undefined') {
+    return '';
+  }
   const pathname = window.location.pathname;
 
   if (pathname === '/') {
