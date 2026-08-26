@@ -59,10 +59,141 @@
                    src="https://www.facebook.com/tr?id=815927715608283&ev=PageView&noscript=1"
     /></noscript>
     <!-- End Meta Pixel Code -->
+
+    <!-- Pré-loader arcade: cobre o branco entre o HTML e o bundle do React.
+         Fica dentro de #root, então o primeiro render do React o descarta. -->
+    <style>
+      #boot-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 2000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 28px;
+        background: radial-gradient(circle at 50% 35%, #1B2050 0%, #0E1130 55%, #080A1F 100%);
+        font-family: 'Retro', 'Bungee', monospace;
+      }
+      #boot-loader::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.22) 0 2px, transparent 2px 6px);
+        animation: boot-scanlines 0.6s linear infinite;
+      }
+      #boot-loader .boot-logo {
+        margin: 0;
+        font-size: 40px;
+        letter-spacing: 2px;
+        color: #FFD23F;
+        text-shadow: -2px -2px 0 #05060F, 2px -2px 0 #05060F, -2px 2px 0 #05060F, 2px 2px 0 #05060F;
+        text-align: center;
+      }
+      #boot-loader .boot-bomb {
+        position: relative;
+        width: 96px;
+        height: 112px;
+        animation: boot-bounce 1.1s ease-in-out infinite;
+      }
+      #boot-loader .boot-body {
+        position: absolute;
+        bottom: 0;
+        left: 8px;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 32% 30%, #2A3170 0 14%, #05060F 60%);
+        border: 4px solid #05060F;
+        box-shadow: 6px 6px 0 #C1121F;
+      }
+      #boot-loader .boot-fuse {
+        position: absolute;
+        top: 14px;
+        left: 52px;
+        width: 6px;
+        height: 26px;
+        background: #A9AEC9;
+        border: 2px solid #05060F;
+        transform: rotate(18deg);
+      }
+      #boot-loader .boot-spark {
+        position: absolute;
+        top: 4px;
+        left: 58px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 2px solid #05060F;
+        animation: boot-spark 0.35s steps(2, end) infinite;
+      }
+      #boot-loader .boot-bar {
+        position: relative;
+        width: 280px;
+        max-width: 70vw;
+        height: 22px;
+        overflow: hidden;
+        background: #080A1F;
+        border: 4px solid #05060F;
+        border-radius: 6px;
+        box-shadow: 4px 4px 0 #05060F;
+      }
+      #boot-loader .boot-fill {
+        position: absolute;
+        inset: 3px auto 3px 0;
+        width: 25%;
+        background: repeating-linear-gradient(90deg, #FFD23F 0 8px, #FF8A00 8px 14px);
+        animation: boot-sweep 1.2s linear infinite;
+      }
+      #boot-loader .boot-label {
+        margin: 0;
+        font-size: 14px;
+        letter-spacing: 4px;
+        color: #31E1F7;
+        text-shadow: 2px 2px 0 #05060F;
+        animation: boot-blink 1s steps(1, end) infinite;
+      }
+      @keyframes boot-bounce {
+        0%, 100% { transform: translateY(0) scale(1, 1); }
+        45% { transform: translateY(-16px) scale(0.96, 1.04); }
+        60% { transform: translateY(0) scale(1.06, 0.94); }
+      }
+      @keyframes boot-spark {
+        0%, 100% { transform: scale(1); background: #FFD23F; }
+        50% { transform: scale(1.4); background: #FF8A00; }
+      }
+      @keyframes boot-blink {
+        0%, 49% { opacity: 1; }
+        50%, 100% { opacity: 0.15; }
+      }
+      @keyframes boot-sweep {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(400%); }
+      }
+      @keyframes boot-scanlines {
+        from { background-position-y: 0; }
+        to { background-position-y: 6px; }
+      }
+      @media (max-width: 767px) {
+        #boot-loader .boot-logo { font-size: 26px; }
+      }
+    </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <div id="root">
+      <div id="boot-loader" role="status" aria-live="polite" aria-label="Loading">
+        <h1 class="boot-logo">BOMBCRYPTO</h1>
+        <div class="boot-bomb">
+          <div class="boot-body"></div>
+          <div class="boot-fuse"></div>
+          <div class="boot-spark"></div>
+        </div>
+        <div class="boot-bar"><div class="boot-fill"></div></div>
+        <p class="boot-label">LOADING...</p>
+      </div>
+    </div>
     <!--
       This HTML file is a templates.
       If you open it directly in the browser, you will see an empty page.

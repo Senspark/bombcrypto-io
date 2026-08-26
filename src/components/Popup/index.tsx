@@ -44,6 +44,7 @@ const CancelButton = styled.button`
   position: absolute;
   right: 2px;
   top: 35px;
+  cursor: pointer;
 `;
 
 const Popup = () => {

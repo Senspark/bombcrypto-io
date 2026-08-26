@@ -5,6 +5,8 @@ import mutedImg_1 from 'src/assests/event/winter/image(1).png';
 import mutedImg_2 from 'src/assests/event/winter/image(2).png';
 import youtubeIcon from 'src/assests/event/winter/youtube.png';
 import { Video } from './video';
+import BannerSlide from './BannerSlide';
+import newRaritiesBanner from 'src/assests/banners/new-rarities.webp';
 import { ScrollMenu, VisibilityContext } from 'react-horizontal-scrolling-menu';
 import { DragDealer } from 'src/carousel/DragDealer';
 import { useSwipe } from 'src/carousel/useSwipe';
@@ -67,27 +69,37 @@ interface videoData {
   url: any;
   id: number;
   isLinkYoutube: boolean;
+  /** 'banner' desenha uma arte animada em vez de tocar um vídeo. */
+  type?: 'video' | 'banner';
+  alt?: string;
 }
 
 const VIDEO_CONFIG: videoData[] = [
   {
-    url: 'https://youtu.be/hRKAZwEBwYs?rel=0',
+    url: newRaritiesBanner,
     id: 0,
+    isLinkYoutube: false,
+    type: 'banner',
+    alt: 'New rarities: Mega, Super Mega, Mystic and Super Mystic',
+  },
+  {
+    url: 'https://youtu.be/hRKAZwEBwYs?rel=0',
+    id: 1,
     isLinkYoutube: false,
   },
   {
     url: 'https://www.youtube.com/watch?v=FWW1P81hWME?rel=0',
-    id: 1,
-    isLinkYoutube: true,
-  },
-  {
-    url: 'https://www.youtube.com/watch?v=oopoSExQTD4?rel=0',
     id: 2,
     isLinkYoutube: true,
   },
   {
-    url: 'https://www.youtube.com/watch?v=M-RwGuBTYek',
+    url: 'https://www.youtube.com/watch?v=oopoSExQTD4?rel=0',
     id: 3,
+    isLinkYoutube: true,
+  },
+  {
+    url: 'https://www.youtube.com/watch?v=M-RwGuBTYek',
+    id: 4,
     isLinkYoutube: true,
   },
 ];
@@ -237,19 +249,32 @@ const Hero: React.FC<Props> = ({
                 onMouseMove={handleDrag}
                 apiRef={apiRef}
               >
-                {slides.map((data) => (
-                  <Video
-                    isMuted={isMuted}
-                    url={data.url}
-                    key={data.url}
-                    itemId={`${data.id}`}
-                    setVisible={() => {
-                      setVideoVisible(data.id);
-                    }}
-                    onEnded={() => onEnded(data.id)}
-                    isLinkYoutube={data.isLinkYoutube}
-                  ></Video>
-                ))}
+                {slides.map((data) =>
+                  data.type === 'banner' ? (
+                    <BannerSlide
+                      key={data.url}
+                      src={data.url}
+                      alt={data.alt}
+                      itemId={`${data.id}`}
+                      setVisible={() => {
+                        setVideoVisible(data.id);
+                      }}
+                      onEnded={() => onEnded(data.id)}
+                    />
+                  ) : (
+                    <Video
+                      isMuted={isMuted}
+                      url={data.url}
+                      key={data.url}
+                      itemId={`${data.id}`}
+                      setVisible={() => {
+                        setVideoVisible(data.id);
+                      }}
+                      onEnded={() => onEnded(data.id)}
+                      isLinkYoutube={data.isLinkYoutube}
+                    ></Video>
+                  ),
+                )}
               </ScrollMenu>
             </div>
           </HideScrollBar>

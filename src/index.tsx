@@ -8,6 +8,7 @@ import reportWebVitals from './reportWebVitals';
 import Application from './components/Application';
 import { initSnapchatPixel } from 'src/libs/snapchat';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import ArcadeLoader from 'src/components/ui/ArcadeLoader';
 
 import {
   HomePage,
@@ -27,7 +28,7 @@ ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Application>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<ArcadeLoader />}>
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/getting-started" element={<GettingStartPage />} />
