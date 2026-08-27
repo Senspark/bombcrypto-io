@@ -15,6 +15,7 @@ import {
   arcadeBorder,
   arcadeColors,
   arcadeRadius,
+  breakpoint,
   hardShadow,
 } from 'src/theme/arcade';
 
@@ -49,6 +50,13 @@ const ImgSocial = styled.img`
   width: 52px;
   height: 52px;
   padding: 4px;
+
+  @media ${breakpoint.sm} {
+    width: 40px;
+    height: 40px;
+    padding: 2px;
+  }
+
   border-radius: ${arcadeRadius.md};
   transition: transform 0.15s ease, background 0.15s ease;
 
@@ -61,6 +69,7 @@ const ImgSocial = styled.img`
 const Li = styled.li`
   list-style: none;
   margin-bottom: 6px;
+  cursor: pointer;
 
   &:last-child {
     margin-bottom: 0;

@@ -14,7 +14,11 @@ type Props = {
 };
 
 const Drawer: React.FC<Props> = ({ isShow, setShowInVideo }) => {
-  const [show, setShow] = useState<boolean>(true);
+  // No celular a barra de redes ficaria por cima do conteúdo, então ela
+  // começa recolhida — o usuário abre pelo botão "+".
+  const [show, setShow] = useState<boolean>(
+    () => typeof window === 'undefined' || window.innerWidth >= 576,
+  );
   const [isForceShow, setForceShow] = useState<boolean>(false);
 
   const onClickShow = () => {

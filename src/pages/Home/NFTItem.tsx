@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { Col, Container } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 
 import {
   item,
@@ -29,6 +29,7 @@ import {
   arcadeColors,
   arcadeFonts,
   arcadeRadius,
+  breakpoint,
   hardShadow,
 } from 'src/theme/arcade';
 import { Reveal, SectionTitle } from 'src/components/ui';
@@ -49,16 +50,63 @@ const Content = styled.div`
   padding: 50px 0;
 `;
 
-const Row = styled.div`
+/**
+ * Linha de itens/raridades: uma coluna por item, na largura total do bloco.
+ * O `gap` fixo de 60px somado às colunas passava da largura da tela no
+ * celular — a grade era mais larga que o container e os primeiros ícones
+ * saíam cortados pela esquerda.
+ */
+const Row = styled.div<{ $cols: number }>`
   display: grid;
-  justify-content: center; /* 👉 canh giữa grid */
+  grid-template-columns: repeat(${({ $cols }) => $cols}, 1fr);
+  justify-items: center;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
   gap: 60px;
+
+  @media ${breakpoint.lg} {
+    gap: 32px;
+  }
+
+  /* abaixo de 992px sete colunas não cabem: passa a três por linha */
+  @media ${breakpoint.md} {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  @media ${breakpoint.sm} {
+    gap: 16px;
+  }
+`;
+
+/** Uma casa da grade. Substitui o `Col` do bootstrap, cuja largura fixa
+    brigava com o grid. */
+const Cell = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
 `;
 
 const ImgItem = styled.img`
   display: block;
   text-align: center;
   margin: 0 auto;
+  /* os sprites têm largura fixa e vazavam da coluna no celular; nas telas
+     menores também encolhem um pouco para a grade respirar */
+  max-width: 100%;
+  height: auto;
+
+  @media ${breakpoint.md} {
+    max-width: 82%;
+  }
+
+  @media ${breakpoint.sm} {
+    max-width: 70%;
+  }
 `;
 
 const ImgStats = styled.img`
@@ -89,6 +137,7 @@ const ContractInfo = styled.div`
   padding: 18px 20px;
   margin: 0 auto;
   position: relative;
+  text-align: left;
 
   .wallet-address {
     font-size: 14px;
@@ -109,6 +158,7 @@ const ContractInfo = styled.div`
 `;
 
 const MarketBtn = styled.button`
+  display: inline-block;
   font-family: ${arcadeFonts.display};
   font-size: 15px;
   letter-spacing: 1px;
@@ -131,6 +181,13 @@ const MarketBtn = styled.button`
   &:active {
     transform: translate(2px, 2px);
     box-shadow: ${hardShadow(0)};
+  }
+
+  /* No mobile o cartão vira coluna, então o botão fica centralizado
+     em vez de encostado à esquerda. */
+  @media screen and (max-width: 990px) {
+    display: block;
+    margin: 16px auto 0;
   }
 `;
 
@@ -156,6 +213,27 @@ const CoppyIcon = styled.img`
   cursor: pointer;
 `;
 
+/**
+ * Espaço do botão de copiar. Quando o cartão quebra em coluna, ele caía
+ * sozinho numa linha própria à esquerda; nessa largura vai para o canto
+ * superior direito, ao lado do endereço.
+ */
+const CopySlot = styled.div`
+  width: 30px;
+  flex-shrink: 0;
+
+  @media screen and (max-width: 990px) {
+    position: absolute;
+    top: 6px;
+    right: 14px;
+    width: auto;
+
+    ${CoppyIcon} {
+      margin: 0;
+    }
+  }
+`;
+
 const RarityText = styled.div`
   color: ${arcadeColors.smoke};
   font-size: 17px;
@@ -170,27 +248,66 @@ const RarityText = styled.div`
   justify-content: center;
 `;
 
-/** Raridade não selecionada: pula ao passar o mouse. */
-const CursorPoint = styled.img`
+/**
+ * Célula de uma raridade. O brilho do item selecionado é posicionado sobre
+ * ela; antes ele era `absolute` solto na coluna, que então colapsava para
+ * largura zero e empurrava a linha inteira para o lado.
+ */
+const RarityCell = styled.div`
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* encolhe até a imagem para que o brilho, medido em %, acompanhe o ícone
+     e não a largura da coluna */
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
   cursor: pointer;
-  transition: transform 0.15s ease;
+`;
 
-  &:hover {
-    transform: translateY(-6px) scale(1.06);
+/** Raridade não selecionada: pula ao passar o mouse. */
+const CursorPoint = styled.img<{ $hidden?: boolean }>`
+  position: relative;
+  max-width: 100%;
+  height: auto;
+  cursor: pointer;
+
+  /* na raridade selecionada quem aparece é a arte com brilho, que já traz o
+     ícone desenhado — esta fica só reservando o espaço da célula, saindo
+     por fade para a troca não dar um "salto" */
+  opacity: ${({ $hidden }) => ($hidden ? 0 : 1)};
+  transition: transform 0.15s ease, opacity 0.2s ease;
+
+  ${RarityCell}:hover & {
+    transform: ${({ $hidden }) =>
+      $hidden ? 'none' : 'translateY(-6px) scale(1.06)'};
   }
+`;
+
+/* o brilho entra por fade em vez de aparecer de uma vez */
+const glowIn = keyframes`
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.88); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 `;
 
 /* a raridade selecionada pulsa de leve */
 const glowPulse = keyframes`
-  0%, 100% { transform: translate(-22%, -22%) scale(1); }
-  50% { transform: translate(-22%, -22%) scale(1.06); }
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.06); }
 `;
 
 const Glow = styled.img`
   position: absolute;
-  transform: translate(-22%, -22%);
-  animation: ${glowPulse} 1.8s ease-in-out infinite;
+  top: 50%;
+  left: 50%;
+  max-width: none;
+  width: 165%;
+  height: auto;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  animation: ${glowIn} 0.25s ease-out both,
+    ${glowPulse} 1.8s ease-in-out 0.25s infinite;
 `;
 
 const LeftText = styled.div`
@@ -487,14 +604,15 @@ const NFTItem: React.FC<{ id: string; network: string }> = ({
                   </div>
 
                   {/* Coppy icon (ẩn khi thiếu nhưng giữ layout) */}
-                  <div style={{ width: '30px' }}>
+                  <CopySlot>
                     {!isMobile && hasHeroAddress && (
                       <CoppyIcon
                         src={coppy}
+                        alt="Copy address"
                         onClick={() => Copy(hero.address)}
                       />
                     )}
-                  </div>
+                  </CopySlot>
                 </ContractContain>
 
                 {hero.market && (
@@ -519,75 +637,53 @@ const NFTItem: React.FC<{ id: string; network: string }> = ({
           </Head>
           {/* Main rarity row */}
           <Row
-            style={{
-              gridTemplateColumns: `repeat(${
-                getRarityConfig(network).main.length
-              }, 1fr)`,
-              marginTop: '50px',
-              width: 'fit-content', // 👈 RẤT QUAN TRỌNG
-              marginLeft: 'auto', // 👈 canh giữa ngang
-              marginRight: 'auto',
-            }}
+            $cols={getRarityConfig(network).main.length}
+            style={{ marginTop: '50px' }}
           >
             {getRarityConfig(network).main.map((v, i) => (
-              <Col xs={4} className="col-lg" key={i}>
-                {raritySelected == v.rarity ? (
-                  <div>
-                    <Glow src={v.glow} alt="layer glow" />
-                  </div>
-                ) : (
+              <Cell key={i}>
+                <RarityCell onClick={() => rarityClick(v.rarity)}>
+                  {raritySelected == v.rarity && (
+                    <Glow src={v.glow} alt="layer" />
+                  )}
                   <CursorPoint
                     src={v.image}
-                    alt="layer"
-                    onClick={() => rarityClick(v.rarity)}
+                    alt={raritySelected == v.rarity ? '' : 'layer'}
+                    aria-hidden={raritySelected == v.rarity}
+                    $hidden={raritySelected == v.rarity}
                   />
-                )}
-              </Col>
+                </RarityCell>
+              </Cell>
             ))}
           </Row>
 
           {/* Extra rarity row (optional) */}
           {getRarityConfig(network).extra && (
             <Row
-              style={{
-                gridTemplateColumns: `repeat(${
-                  getRarityConfig(network).extra?.length
-                }, 1fr)`,
-                marginTop: '50px',
-                width: 'fit-content', // 👈 RẤT QUAN TRỌNG
-                marginLeft: 'auto', // 👈 canh giữa ngang
-                marginRight: 'auto',
-              }}
+              $cols={getRarityConfig(network).extra?.length || 1}
+              style={{ marginTop: '50px' }}
             >
               {getRarityConfig(network).extra?.map((v, i) => (
-                <Col xs={4} className="col-lg" key={`extra-${i}`}>
-                  {raritySelected == v.rarity ? (
-                    <div>
-                      <Glow src={v.glow} alt="layer glow" />
-                    </div>
-                  ) : (
+                <Cell key={`extra-${i}`}>
+                  <RarityCell onClick={() => rarityClick(v.rarity)}>
+                    {raritySelected == v.rarity && (
+                      <Glow src={v.glow} alt="layer" />
+                    )}
                     <CursorPoint
                       src={v.image}
-                      alt="layer"
-                      onClick={() => rarityClick(v.rarity)}
+                      alt={raritySelected == v.rarity ? '' : 'layer'}
+                      aria-hidden={raritySelected == v.rarity}
+                      $hidden={raritySelected == v.rarity}
                     />
-                  )}
-                </Col>
+                  </RarityCell>
+                </Cell>
               ))}
             </Row>
           )}
-          <Row
-            style={{
-              gridTemplateColumns: `repeat(5, 1fr)`,
-              marginTop: '50px',
-              width: 'fit-content', // 👈 RẤT QUAN TRỌNG
-              marginLeft: 'auto', // 👈 canh giữa ngang
-              marginRight: 'auto',
-            }}
-          >
+          <Row $cols={5} style={{ marginTop: '50px' }}>
             {getItemByNetworkAndRarity(network, raritySelected).map((v, i) => {
               return (
-                <Col xs={4} className="col-lg" key={i}>
+                <Cell key={i}>
                   <ImgItem src={v.new || ''} className="new" />
                   <ImgItem src={v.image} alt="layer" />
                   <div
@@ -602,7 +698,7 @@ const NFTItem: React.FC<{ id: string; network: string }> = ({
                       <Shield2 src={v.shield} alt="shield" />
                     )}
                   </div>
-                </Col>
+                </Cell>
               );
             })}
           </Row>
@@ -660,14 +756,15 @@ const NFTItem: React.FC<{ id: string; network: string }> = ({
                 </div>
 
                 {/* Copy icon */}
-                <div style={{ width: '30px' }}>
+                <CopySlot>
                   {!isMobile && hasHouseAddress && (
                     <CoppyIcon
                       src={coppy}
+                      alt="Copy address"
                       onClick={() => Copy(house.address)}
                     />
                   )}
-                </div>
+                </CopySlot>
               </ContractContain>
 
               {/* Visit Market button */}
