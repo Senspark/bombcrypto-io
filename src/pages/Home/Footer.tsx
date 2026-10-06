@@ -158,6 +158,14 @@ const Footer: React.FC<{ id: string }> = ({ id }) => {
               <Text
                 as="a"
                 target={'_blank'}
+                href="https://database.bombcrypto.io/index.html"
+                onClick={() => logTrackClickEventAnalytics('database_click')}
+              >
+                Database
+              </Text>
+              <Text
+                as="a"
+                target={'_blank'}
                 href="https://bombcrypto.substack.com/p/bomb-cryptosenspark-media-kit"
                 onClick={() => logTrackClickEventAnalytics('mediakit_click')}
               >
