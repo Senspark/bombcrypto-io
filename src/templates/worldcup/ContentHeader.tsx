@@ -180,6 +180,17 @@ const ContentHeader: React.FC<Props> = ({ ChangeNetWork, showSp }) => {
             >
               TOKEN DISTRIBUTION
             </OtherMenuItem>
+            <OtherMenuItem
+              onClick={() => {
+                logTrackClickEventAnalytics('database_click');
+                window.open(
+                  'https://database.bombcrypto.io/index.html',
+                  '_blank',
+                );
+              }}
+            >
+              DATABASE
+            </OtherMenuItem>
           </OtherMenu>
         </OtherWrapper>
       </Nav>
