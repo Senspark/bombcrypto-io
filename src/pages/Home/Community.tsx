@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import bombstatsLogo from 'src/assests/community/bombstats.webp';
+import bombercityLogo from 'src/assests/community/bombercity.webp';
 import bombanalyticsLogo from 'src/assests/community/bombanalytics.webp';
 import { logTrackClickEventAnalytics } from 'src/libs/logEvent';
 import { defineText, Lang, useLang, useText } from 'src/i18n';
@@ -49,10 +49,10 @@ type CommunityTool = {
 
 const COMMUNITY_TOOLS: CommunityTool[] = [
   {
-    name: 'BombStats',
-    url: 'https://bombstats.com',
-    domain: 'bombstats.com',
-    logo: bombstatsLogo,
+    name: 'BomberCity',
+    url: 'https://www.bombercity.com',
+    domain: 'bombercity.com',
+    logo: bombercityLogo,
     text: defineText(
       {
         tagline: 'Your whole farm on one screen',
