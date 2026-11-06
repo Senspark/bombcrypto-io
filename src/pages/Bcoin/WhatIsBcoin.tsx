@@ -13,6 +13,70 @@ import {
   pixelTextShadow,
 } from 'src/theme/arcade';
 import { Reveal } from 'src/components/ui';
+import { defineText, useLang, useText } from 'src/i18n';
+
+const TEXT = defineText(
+  {
+    titleBefore: 'What is',
+    desc1:
+      'is the utility token built into the core game system that powers all game progress and developments.',
+    desc2:
+      'owners can earn rewards through in-game by playing the game, and participating in key governance votes.',
+    stakingTitle: 'Staking',
+    stakingHint: '(Q1/2022)',
+    stakingDesc: [
+      'Players will be able to stake their tokens',
+      'to receive powerful VIP privileges and rewards.',
+    ],
+    currencyTitle: 'In-game currency',
+    currencyItems: [
+      '- Upgrade',
+      '- Speed up the process of opening',
+      'the hero box to withdraw tokens.',
+      '- Fast charging of energy.',
+      '- Tickets to events like battle royale, Boss',
+      '- Create a clan',
+    ],
+  },
+  {
+    titleBefore: 'O que é',
+    desc1:
+      'é o token de utilidade que faz parte do sistema principal do jogo e movimenta todo o progresso e as novidades do jogo.',
+    desc2:
+      'Quem tem BCOIN pode ganhar recompensas jogando e votar nas decisões importantes do jogo.',
+    stakingTitle: 'Stake',
+    stakingHint: '(1º tri/2022)',
+    stakingDesc: [
+      'Os jogadores poderão fazer stake dos seus tokens',
+      'para receber vantagens VIP e recompensas.',
+    ],
+    currencyTitle: 'Moeda do jogo',
+    currencyItems: [
+      '- Evoluir',
+      '- Acelerar a abertura',
+      'da caixa de heróis para sacar tokens.',
+      '- Recarga rápida de energia.',
+      '- Ingressos para eventos como battle royale e Boss',
+      '- Criar um clã',
+    ],
+  },
+);
+
+/** Linhas separadas por <br /> (mantém a quebra do layout original). */
+const Lines: React.FC<{ lines: string[]; trailingBreak?: boolean }> = ({
+  lines,
+  trailingBreak,
+}) => (
+  <>
+    {lines.map((line, i) => (
+      <React.Fragment key={i}>
+        {i > 0 && <br />}
+        {line}
+      </React.Fragment>
+    ))}
+    {trailingBreak && <br />}
+  </>
+);
 
 const SectionWrapper = styled.section`
   width: 100%;
@@ -107,51 +171,42 @@ const MetaDesc = styled.p`
 `;
 
 const WhatIsBcoin: React.FC<{ id: string }> = ({ id }) => {
+  const { lang } = useLang();
+  const t = useText(TEXT);
   return (
     <section id={id}>
       <SectionWrapper>
         <Container className="container">
           <Title>
-            What is <span className="marked-yellow">BCOIN?</span>
+            {t.titleBefore} <span className="marked-yellow">BCOIN?</span>
           </Title>
           <Description>
-            <strong>BCOIN</strong> is the utility token built into the core game
-            system that powers all game progress and developments.
+            <strong>BCOIN</strong> {t.desc1}
             <br />
-            <strong>BCOIN</strong> owners can earn rewards through in-game by
-            playing the game, and participating in key governance votes.
+            {/* em português a frase já começa com "Quem tem BCOIN" */}
+            {lang === 'en' && <strong>BCOIN</strong>}
+            {lang === 'en' ? ' ' : ''}
+            {t.desc2}
           </Description>
           <Reveal>
             <MetaWrapper className="row d-flex justify-content-center">
               <MetaItem className="col-4">
-                <MetaImage src={starking} />
+                <MetaImage src={starking} alt="" />
                 <MetaTitle>
-                  <p>Staking</p>
-                  <p className="hint">(Q1/2022)</p>
+                  <p>{t.stakingTitle}</p>
+                  <p className="hint">{t.stakingHint}</p>
                 </MetaTitle>
                 <MetaDesc>
-                  Players will be able to stake their tokens <br />
-                  to receive powerful VIP privileges and rewards.
+                  <Lines lines={t.stakingDesc} />
                 </MetaDesc>
               </MetaItem>
               <MetaItem className="col-4">
-                <MetaImage src={hand} />
+                <MetaImage src={hand} alt="" />
                 <MetaTitle>
-                  <p>In-game currency</p>
+                  <p>{t.currencyTitle}</p>
                 </MetaTitle>
                 <MetaDesc className="text-start">
-                  - Upgrade
-                  <br />
-                  - Speed up the process of opening
-                  <br />
-                  the hero box to withdraw tokens.
-                  <br />
-                  - Fast charging of energy.
-                  <br />
-                  - Tickets to events like battle royale, Boss
-                  <br />
-                  - Create a clan
-                  <br />
+                  <Lines lines={t.currencyItems} trailingBreak />
                 </MetaDesc>
               </MetaItem>
             </MetaWrapper>

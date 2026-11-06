@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { logTrackClickEventAnalytics } from 'src/libs/logEvent';
@@ -9,7 +9,75 @@ import {
   arcadeFonts,
   breakpoint,
 } from 'src/theme/arcade';
-import { ArcadeContainer, BrickDivider } from 'src/components/ui';
+import { ArcadeContainer } from 'src/components/ui';
+import { spriteDataUrl } from 'src/game/atlas';
+import { defineText, useText } from 'src/i18n';
+
+const TEXT = defineText(
+  {
+    tagline:
+      'Plant bombs, explore the map and earn rewards playing BombCrypto.',
+    game: 'Game',
+    home: 'Home',
+    play: 'Play Now',
+    metaverse: 'Metaverse',
+    resources: 'Resources',
+    whitepaper: 'Whitepaper',
+    database: 'Database',
+    mediaKit: 'Media Kit',
+    guide: 'Guide',
+    legal: 'Legal',
+    privacy: 'Privacy Policy',
+    terms: 'Terms Of Service',
+    rights: 'All rights reserved.',
+  },
+  {
+    tagline:
+      'Plante bombas, explore o mapa e ganhe recompensas jogando BombCrypto.',
+    game: 'Jogo',
+    home: 'Início',
+    play: 'Jogar agora',
+    metaverse: 'Metaverso',
+    resources: 'Recursos',
+    whitepaper: 'Whitepaper',
+    database: 'Banco de dados',
+    mediaKit: 'Kit de mídia',
+    guide: 'Guia',
+    legal: 'Legal',
+    privacy: 'Política de Privacidade',
+    terms: 'Termos de Serviço',
+    rights: 'Todos os direitos reservados.',
+  },
+);
+
+/* Muro do templo que cerca o mapa do jogo (BorderBG1), repetido na largura. */
+const Wall = styled.div<{ $src: string }>`
+  height: 64px;
+  background-color: #5d6b4a;
+  background-image: ${({ $src }) => ($src ? `url(${$src})` : 'none')};
+  background-repeat: repeat-x;
+  background-size: auto 64px;
+  image-rendering: pixelated;
+  border-top: ${arcadeBorder.thick};
+  border-bottom: ${arcadeBorder.thick};
+
+  @media ${breakpoint.sm} {
+    height: 44px;
+    background-size: auto 44px;
+  }
+`;
+
+function useTempleWall() {
+  const [src, setSrc] = useState('');
+  useEffect(() => {
+    let alive = true;
+    spriteDataUrl('t0_border_top').then((u) => alive && setSrc(u));
+    return () => {
+      alive = false;
+    };
+  }, []);
+  return src;
+}
 
 const Wrapper = styled.footer`
   background: ${arcadeColors.nightDeep};
@@ -104,6 +172,8 @@ const Bottom = styled.div`
 `;
 
 const Footer: React.FC<{ id: string }> = ({ id }) => {
+  const wall = useTempleWall();
+  const t = useText(TEXT);
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -113,27 +183,25 @@ const Footer: React.FC<{ id: string }> = ({ id }) => {
 
   return (
     <Wrapper id={id}>
-      <BrickDivider />
+      <Wall $src={wall} aria-hidden="true" />
       <ArcadeContainer>
         <Inner>
           <div>
             <LogoFooterImg onClick={scrollToTop} src={logo} alt="logo footer" />
-            <Tagline>
-              Plant bombs, explore the map and earn rewards playing BombCrypto.
-            </Tagline>
+            <Tagline>{t.tagline}</Tagline>
           </div>
 
           <Columns>
             <div>
-              <ColumnTitle>Game</ColumnTitle>
-              <Text onClick={scrollToTop}>Home</Text>
+              <ColumnTitle>{t.game}</ColumnTitle>
+              <Text onClick={scrollToTop}>{t.home}</Text>
               <Text
                 as="a"
                 target={'_blank'}
                 href="https://game.bombcrypto.io/"
                 onClick={() => logTrackClickEventAnalytics('play_click')}
               >
-                Play Now
+                {t.play}
               </Text>
               <Text
                 as="a"
@@ -141,19 +209,19 @@ const Footer: React.FC<{ id: string }> = ({ id }) => {
                 href="https://senspark.com/"
                 onClick={() => logTrackClickEventAnalytics('Metaverse_click')}
               >
-                Metaverse
+                {t.metaverse}
               </Text>
             </div>
 
             <div>
-              <ColumnTitle>Resources</ColumnTitle>
+              <ColumnTitle>{t.resources}</ColumnTitle>
               <Text
                 as="a"
                 target={'_blank'}
                 href="https://whitepaper.bombcrypto.io/"
                 onClick={() => logTrackClickEventAnalytics('whiterpaper_click')}
               >
-                Whitepaper
+                {t.whitepaper}
               </Text>
               <Text
                 as="a"
@@ -161,7 +229,7 @@ const Footer: React.FC<{ id: string }> = ({ id }) => {
                 href="https://database.bombcrypto.io/index.html"
                 onClick={() => logTrackClickEventAnalytics('database_click')}
               >
-                Database
+                {t.database}
               </Text>
               <Text
                 as="a"
@@ -169,27 +237,27 @@ const Footer: React.FC<{ id: string }> = ({ id }) => {
                 href="https://bombcrypto.substack.com/p/bomb-cryptosenspark-media-kit"
                 onClick={() => logTrackClickEventAnalytics('mediakit_click')}
               >
-                Media Kit
+                {t.mediaKit}
               </Text>
               <LinkText to="/guide" onClick={scrollToTop}>
-                Guide
+                {t.guide}
               </LinkText>
             </div>
 
             <div>
-              <ColumnTitle>Legal</ColumnTitle>
+              <ColumnTitle>{t.legal}</ColumnTitle>
               <LinkText to="/privacy-policy" onClick={scrollToTop}>
-                Privacy Policy
+                {t.privacy}
               </LinkText>
               <LinkText to="/term-of-service" onClick={scrollToTop}>
-                Terms Of Service
+                {t.terms}
               </LinkText>
             </div>
           </Columns>
         </Inner>
       </ArcadeContainer>
       <Bottom>
-        © {new Date().getFullYear()} BombCrypto — Senspark. All rights reserved.
+        © {new Date().getFullYear()} BombCrypto — Senspark. {t.rights}
       </Bottom>
     </Wrapper>
   );

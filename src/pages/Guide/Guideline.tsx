@@ -4,7 +4,8 @@ import { Col, Row } from 'react-bootstrap';
 import styled from 'styled-components';
 import bgGuide from 'src/assests/imgRouteGuide/bgGuide.png';
 // import button from 'src/assests/imgRouteGuide/button.webp';
-import { listGuide } from 'src/data/guideline/listGuideline';
+import { listGuideByLang } from 'src/data/guideline/listGuideline';
+import { defineText, useLang } from 'src/i18n';
 import ModalAdvertisement from 'src/components/ModalComingSoon';
 // import { logTrackClickEventAnalytics } from 'src/libs/logEvent';
 import YouTubeVideoModal from 'src/components/YouTubeVideoModal';
@@ -96,7 +97,25 @@ const LinkYoutube = styled.a`
 //   }
 // `;
 
+const TEXT = defineText(
+  {
+    title: 'Guideline',
+    subtitle:
+      'Step-by-step videos to help you start playing and get the most out of the game.',
+    imageAlt: 'Guide video',
+  },
+  {
+    title: 'Guia',
+    subtitle:
+      'Vídeos passo a passo para você começar a jogar e aproveitar o jogo ao máximo.',
+    imageAlt: 'Vídeo do guia',
+  },
+);
+
 const Guideline: React.FC<{ id: string }> = ({ id }) => {
+  const { lang } = useLang();
+  const t = TEXT[lang];
+  const listGuide = listGuideByLang[lang];
   const [show, setShowComingSoon] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [url, setUrl] = useState('');
@@ -110,11 +129,8 @@ const Guideline: React.FC<{ id: string }> = ({ id }) => {
   return (
     <Wrapper id={id}>
       <ArcadeContainer>
-        <SectionTitle $center>Guideline</SectionTitle>
-        <SectionSubtitle $center>
-          Step-by-step videos to help you start playing and get the most out of
-          the game.
-        </SectionSubtitle>
+        <SectionTitle $center>{t.title}</SectionTitle>
+        <SectionSubtitle $center>{t.subtitle}</SectionSubtitle>
         <Row className="mt-4">
           {listGuide.map((v, i) => {
             return (
@@ -122,7 +138,7 @@ const Guideline: React.FC<{ id: string }> = ({ id }) => {
                 <Reveal delay={(i % 3) * 120}>
                   <LinkYoutube target={v.target}>
                     <GuideCard onClick={() => OnClick(i)}>
-                      <img src={v.image} alt="imgGuide" />
+                      <img src={v.image} alt={v.detail || t.imageAlt} />
                       <ContentDetail>{v.detail}</ContentDetail>
                     </GuideCard>
                   </LinkYoutube>

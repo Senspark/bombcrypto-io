@@ -19,11 +19,26 @@ import Notification from './Notification';
 // import Popup from 'src/components/Popup';
 // import ModalAdvertisement from 'src/components/Modal';
 import UpdateHero from './UpdateHero';
+import PlayableMap from './PlayableMap';
+import Community from './Community';
+import TreasureHero from './TreasureHero';
+import Announcements from './Announcements';
+import HeroShowcase from './HeroShowcase';
+import TokenCards from './TokenCards';
+import HouseShowcase from './HouseShowcase';
 import Header from 'src/templates/worldcup/Header';
 import ContentHeader from '../../templates/worldcup/ContentHeader';
 import { NETWORK, NetworkType, networkOptions } from 'src/Contants/Contants';
-import { BackToTop } from 'src/components/ui';
+import { BackToTop, BrickDivider } from 'src/components/ui';
+import { arcadeColors } from 'src/theme/arcade';
 // import Advisor from './Advisor';
+
+/**
+ * Home nova (out/2026): topo com o mapa do jogo, anúncios em cards, vitrine de
+ * heróis e tokens com preço ao vivo. `false` volta para a home anterior
+ * (carrossel no topo, mapa jogável, anúncios em abas e tokens antigos).
+ */
+const HOME_V2 = true;
 
 const Main: React.FC = () => {
   const headerRef = useRef(null);
@@ -71,25 +86,55 @@ const Main: React.FC = () => {
       />
       <SocialNetwork id="social" show={showInHeader} />
       {/*<Popup />*/}
-      <div ref={headerRef}>
-        <UpdateHero
-          id="hero"
-          show={!isHeaderVisible}
-          setShowInVideo={setShowInHeader}
-        />
-      </div>
-      {/*<Hero id="hero" />*/}
-      <div>
-        <Notification id="notification" />
-      </div>
-      {/*<PlayToEarn id="play_to_earn" />*/}
-      <div>
-        <BcoinToken id="bcoin_token" networkSelected={networkSelected} />
-      </div>
-      {/*<Information id="information" />*/}
-      <div>
-        <NFTItem id="item" network={networkSelected} />
-      </div>
+      {HOME_V2 ? (
+        <>
+          <div ref={headerRef}>
+            <TreasureHero id="top" />
+          </div>
+          <Announcements id="notification" />
+          <BrickDivider />
+          <UpdateHero
+            id="hero"
+            show={!isHeaderVisible}
+            setShowInVideo={setShowInHeader}
+          />
+          <BrickDivider $color={arcadeColors.cyan} />
+          <HeroShowcase id="heroes" />
+          <BrickDivider $color={arcadeColors.red} />
+          <TokenCards id="bcoin_token" networkSelected={networkSelected} />
+          <BrickDivider $color={arcadeColors.green} />
+          <NFTItem id="item" network={networkSelected} hideHouses />
+          <BrickDivider $color={arcadeColors.yellow} />
+          <HouseShowcase id="houses" network={networkSelected} />
+        </>
+      ) : (
+        <>
+          <div ref={headerRef}>
+            <UpdateHero
+              id="hero"
+              show={!isHeaderVisible}
+              setShowInVideo={setShowInHeader}
+            />
+          </div>
+          {/*<Hero id="hero" />*/}
+          <BrickDivider />
+          <PlayableMap id="play" />
+          <BrickDivider $color={arcadeColors.cyan} />
+          <div>
+            <Notification id="notification" />
+          </div>
+          {/*<PlayToEarn id="play_to_earn" />*/}
+          <BrickDivider $color={arcadeColors.red} />
+          <div>
+            <BcoinToken id="bcoin_token" networkSelected={networkSelected} />
+          </div>
+          {/*<Information id="information" />*/}
+          <BrickDivider $color={arcadeColors.green} />
+          <div>
+            <NFTItem id="item" network={networkSelected} />
+          </div>
+        </>
+      )}
       {/*<BuildHouse id="build" />*/}
       {/*<BattleMode id="battle" />*/}
       {/*<RoadMap id="road" />*/}
@@ -98,6 +143,8 @@ const Main: React.FC = () => {
       {/*<Advisor id="advisor" />*/}
       {/*<AboutSenspark id="about_senspark" />*/}
       {/*<Partners id="partner" />*/}
+      <BrickDivider $color={arcadeColors.purple} />
+      <Community id="community" />
       <div>
         <Footer id="footer" />
       </div>

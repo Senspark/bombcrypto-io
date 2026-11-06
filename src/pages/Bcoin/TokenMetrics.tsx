@@ -12,6 +12,38 @@ import {
   pixelTextShadow,
 } from 'src/theme/arcade';
 import { Reveal, SectionTitle } from 'src/components/ui';
+import { defineText, useText } from 'src/i18n';
+
+const TEXT = defineText(
+  {
+    title: 'Token Metrics',
+    publicSupply: 'SUPPLY AT PUBLIC SALE',
+    publicPrice: 'PUBLIC SALE PRICE',
+    totalSupply: 'TOTAL SUPPLY',
+    vipTitle: 'Vip & Stake',
+    vipDesc: [
+      'Users can stake Bcoin to upgrade their VIP rating.',
+      'The higher the VIP level, the more incentives the',
+      'player will receive.',
+    ],
+    stakeAlt: 'Stake BCOIN',
+    rankingAlt: 'VIP levels',
+  },
+  {
+    title: 'Números do token',
+    publicSupply: 'OFERTA NA VENDA PÚBLICA',
+    publicPrice: 'PREÇO NA VENDA PÚBLICA',
+    totalSupply: 'OFERTA TOTAL',
+    vipTitle: 'VIP e Stake',
+    vipDesc: [
+      'Os jogadores podem fazer stake de BCOIN para subir de nível VIP.',
+      'Quanto maior o nível VIP, mais benefícios',
+      'o jogador recebe.',
+    ],
+    stakeAlt: 'Fazer stake de BCOIN',
+    rankingAlt: 'Níveis VIP',
+  },
+);
 
 const SectionWrapper = styled.section`
   width: 100%;
@@ -112,44 +144,47 @@ const VipStakeBcoinButton = styled.img`
 `;
 
 const TokenMetrics: React.FC<{ id: string }> = ({ id }) => {
+  const t = useText(TEXT);
   return (
     <SectionWrapper id={id}>
       <Container className="container">
-        <SectionTitle $center>Token Metrics</SectionTitle>
+        <SectionTitle $center>{t.title}</SectionTitle>
         <Reveal>
           <SummaryWrapper>
             <SummaryItem className="col-4 col-sm-3">
               <SummaryTitle>2,000,000</SummaryTitle>
-              <SummaryDesc>SUPPLY AT PUBLIC SALE</SummaryDesc>
+              <SummaryDesc>{t.publicSupply}</SummaryDesc>
             </SummaryItem>
             <SummaryItem className="col-4 col-sm-3">
               <SummaryTitle>$0.1</SummaryTitle>
-              <SummaryDesc>PUBLIC SALE PRICE</SummaryDesc>
+              <SummaryDesc>{t.publicPrice}</SummaryDesc>
             </SummaryItem>
             <SummaryItem className="col-4 col-sm-3">
               <SummaryTitle>100,000,000</SummaryTitle>
-              <SummaryDesc>TOTAL SUPPLY</SummaryDesc>
+              <SummaryDesc>{t.totalSupply}</SummaryDesc>
             </SummaryItem>
           </SummaryWrapper>
         </Reveal>
         <Reveal delay={120}>
           <VipWrapper>
             <VipInfo className="col-sm-6 col-12 vip-left">
-              <VipInfoTitle>Vip & Stake</VipInfoTitle>
+              <VipInfoTitle>{t.vipTitle}</VipInfoTitle>
               <VipInfoDesc>
-                Users can stake Bcoin to upgrade their VIP rating.
-                <br />
-                The higher the VIP level, the more incentives the
-                <br />
-                player will receive.
+                {t.vipDesc.map((line, i) => (
+                  <React.Fragment key={i}>
+                    {i > 0 && <br />}
+                    {line}
+                  </React.Fragment>
+                ))}
               </VipInfoDesc>
               <VipStakeBcoinButton
                 src={btnStake}
+                alt={t.stakeAlt}
                 onClick={() => window.open('https://dapp.bombcrypto.io')}
               />
             </VipInfo>
             <VipInfo className="col-sm-6 col-12">
-              <VipRanking src={vipRanking} />
+              <VipRanking src={vipRanking} alt={t.rankingAlt} />
             </VipInfo>
           </VipWrapper>
         </Reveal>

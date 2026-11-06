@@ -1,4 +1,6 @@
 import React from 'react';
+import LegalNotice from 'src/components/ui/LegalNotice';
+import { useLang } from 'src/i18n';
 import styled from 'styled-components';
 
 import { content } from 'src/data/termOfSevices/content';
@@ -39,10 +41,14 @@ const Detail = styled.p`
 `;
 
 const Content: React.FC<{ id: string }> = ({ id }) => {
+  const { lang } = useLang();
   return (
     <Wrapper id={id}>
       <ArcadeContainer>
-        <SectionTitle>Terms Of Service</SectionTitle>
+        <SectionTitle>
+          {lang === 'pt' ? 'Termos de Serviço' : 'Terms Of Service'}
+        </SectionTitle>
+        <LegalNotice />
         <ContentDetail>
           {content.map((v, i) => {
             return (

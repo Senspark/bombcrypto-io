@@ -4,6 +4,7 @@ import part3 from 'src/assests/imgRouteGuide/part3.png';
 import part4 from 'src/assests/imgRouteGuide/part4.png';
 import part5 from 'src/assests/imgRouteGuide/part5.png';
 import part6 from 'src/assests/imgRouteGuide/part6.png';
+import type { Lang } from 'src/i18n';
 
 type ListGuide = {
   image: any;
@@ -34,8 +35,7 @@ export const listGuide: ListGuide[] = [
   },
   {
     image: part4,
-    detail: `BOMBCRYPTO Guideline – Shield (part 4/6)
- `,
+    detail: 'BOMBCRYPTO Guideline – Shield (part 4/6)',
     target: '_blank',
     href: 'https://www.youtube.com/watch?v=SRr9EWg4oZE',
   },
@@ -52,3 +52,24 @@ export const listGuide: ListGuide[] = [
     href: 'https://www.youtube.com/watch?v=8WVfXLiTOOk',
   },
 ];
+
+/** Títulos dos vídeos em português, na mesma ordem de `listGuide`. */
+const detailPt = [
+  'Guia BOMBCRYPTO – Criando a carteira MetaMask para jogar Bombcrypto (parte 1/6)',
+  'Guia BOMBCRYPTO – Como comprar heróis (parte 2/6)',
+  'Guia BOMBCRYPTO – Modo Treasure Hunt (parte 3/6)',
+  'Guia BOMBCRYPTO – Escudo (parte 4/6)',
+  'Guia Bomb Crypto parte 5 – Fusão de heróis (parte 5/6)',
+  'Guia Bomb Crypto parte 6 – Stake de herói (parte 6/6)',
+];
+
+export const listGuidePt: ListGuide[] = listGuide.map((item, i) => ({
+  ...item,
+  detail: detailPt[i],
+}));
+
+/** Lista do guia por idioma (imagens e links são os mesmos). */
+export const listGuideByLang: Record<Lang, ListGuide[]> = {
+  en: listGuide,
+  pt: listGuidePt,
+};

@@ -5,6 +5,20 @@ import PieChart from 'src/assests/bcoin/pie-chart.png';
 import AllocationTable from 'src/assests/bcoin/allocation-table.png';
 import { arcadeColors, arcadeFonts } from 'src/theme/arcade';
 import { SectionTitle } from 'src/components/ui';
+import { defineText, useText } from 'src/i18n';
+
+const TEXT = defineText(
+  {
+    title: 'Allocation',
+    pieAlt: 'BCOIN allocation chart',
+    tableAlt: 'BCOIN allocation table',
+  },
+  {
+    title: 'Distribuição de tokens',
+    pieAlt: 'Gráfico da distribuição de BCOIN',
+    tableAlt: 'Tabela da distribuição de BCOIN',
+  },
+);
 
 const SectionWrapper = styled.section`
   width: 100%;
@@ -52,16 +66,17 @@ const TableImage = styled.img`
 `;
 
 const Allocation: React.FC<{ id: string }> = ({ id }) => {
+  const t = useText(TEXT);
   return (
     <SectionWrapper id={id}>
       <Container className="container">
-        <SectionTitle $center>Allocation</SectionTitle>
+        <SectionTitle $center>{t.title}</SectionTitle>
         <AllocationWrapper>
           <AllocationItem className="col-12 col-sm-6">
-            <PieChartImage src={PieChart} />
+            <PieChartImage src={PieChart} alt={t.pieAlt} />
           </AllocationItem>
           <AllocationItem className="col-12 col-sm-6 ">
-            <TableImage src={AllocationTable} />
+            <TableImage src={AllocationTable} alt={t.tableAlt} />
           </AllocationItem>
         </AllocationWrapper>
       </Container>

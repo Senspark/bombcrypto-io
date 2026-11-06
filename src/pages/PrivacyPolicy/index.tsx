@@ -1,4 +1,6 @@
 import React from 'react';
+import LegalNotice from 'src/components/ui/LegalNotice';
+import { useLang } from 'src/i18n';
 import styled from 'styled-components';
 
 import { content } from 'src/data/privacyPolicy';
@@ -57,11 +59,15 @@ const Content = styled.div`
 `;
 
 const PrivacyPolicy: React.FC = () => {
+  const { lang } = useLang();
   return (
     <PageLayout>
       <Wrapper>
         <ArcadeContainer>
-          <SectionTitle>Privacy Policy</SectionTitle>
+          <SectionTitle>
+            {lang === 'pt' ? 'Política de Privacidade' : 'Privacy Policy'}
+          </SectionTitle>
+          <LegalNotice />
           <Content dangerouslySetInnerHTML={{ __html: content }} />
         </ArcadeContainer>
       </Wrapper>

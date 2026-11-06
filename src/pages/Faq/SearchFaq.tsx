@@ -12,6 +12,22 @@ import {
   SectionSubtitle,
   SectionTitle,
 } from 'src/components/ui';
+import { defineText, useText } from 'src/i18n';
+
+const TEXT = defineText(
+  {
+    subtitle:
+      'Find quick answers about the game, tokens, NFTs and the marketplace.',
+    placeholder: 'Search FAQ',
+    search: 'Search',
+  },
+  {
+    subtitle:
+      'Respostas rápidas sobre o jogo, os tokens, os NFTs e o Marketplace.',
+    placeholder: 'Pesquisar no FAQ',
+    search: 'Pesquisar',
+  },
+);
 
 const Wrapper = styled.section`
   padding: 140px 0 40px;
@@ -61,17 +77,38 @@ const ButtonSearch = styled.button`
   cursor: pointer;
 `;
 
-const SearchFaq: React.FC<{ id: string }> = ({ id }) => {
+type Props = {
+  id: string;
+  query: string;
+  onQueryChange: (query: string) => void;
+};
+
+const SearchFaq: React.FC<Props> = ({ id, query, onQueryChange }) => {
+  const t = useText(TEXT);
+
   return (
     <Wrapper id={id}>
       <ArcadeContainer>
         <SectionTitle $center>FAQ</SectionTitle>
-        <SectionSubtitle $center>
-          Find quick answers about the game, tokens, NFTs and the marketplace.
-        </SectionSubtitle>
-        <SearchBox>
-          <InputSearch placeholder="Search FAQ" />
-          <ButtonSearch type="button" aria-label="Search">
+        <SectionSubtitle $center>{t.subtitle}</SectionSubtitle>
+        <SearchBox
+          as="form"
+          role="search"
+          onSubmit={(e: React.FormEvent) => {
+            e.preventDefault();
+            document
+              .getElementById('contentFaq')
+              ?.scrollIntoView({ behavior: 'smooth' });
+          }}
+        >
+          <InputSearch
+            type="search"
+            placeholder={t.placeholder}
+            aria-label={t.placeholder}
+            value={query}
+            onChange={(e) => onQueryChange(e.target.value)}
+          />
+          <ButtonSearch type="submit" aria-label={t.search}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"

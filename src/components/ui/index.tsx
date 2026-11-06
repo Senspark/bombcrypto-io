@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLang } from 'src/i18n';
 import styled, { css, keyframes } from 'styled-components';
 
 import {
@@ -359,6 +360,7 @@ const BackToTopButton = styled.button<{ $show: boolean }>`
 
 /** Botão "voltar ao topo" que aparece depois de rolar a página. */
 export const BackToTop: React.FC = () => {
+  const { lang } = useLang();
   const [show, setShow] = React.useState(false);
 
   React.useEffect(() => {
@@ -374,7 +376,7 @@ export const BackToTop: React.FC = () => {
   return (
     <BackToTopButton
       type="button"
-      aria-label="Back to top"
+      aria-label={lang === 'pt' ? 'Voltar ao topo' : 'Back to top'}
       $show={show}
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
     >

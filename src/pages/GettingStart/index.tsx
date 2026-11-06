@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTransition, animated, config } from 'react-spring';
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
@@ -16,12 +16,49 @@ import playNow from 'src/assests/imgHeader/playNow.png';
 import arrow from 'src/assests/imgHeader/arrow.png';
 import { logTrackClickEventAnalytics } from 'src/libs/logEvent';
 
-import list from './data';
+import { getSteps } from './data';
+import { defineText, useLang } from 'src/i18n';
 import { arcadeBorder, arcadeColors, arcadeFonts } from 'src/theme/arcade';
 import SocialNetwork from 'src/pages/Home/SocialNetwork';
 import ModalAdvertisement from '../../components/ModalComingSoon';
 
+const TEXT = defineText(
+  {
+    logoAlt: 'logo',
+    gettingStartedAlt: 'Getting started',
+    discordAlt: 'Join our Discord',
+    telegramAlt: 'Join our Telegram',
+    playNowAlt: 'Play now',
+    playNow: 'play now!',
+    arrowAlt: 'arrow',
+    basicStep: 'Basic step',
+    advanceStep: 'Advance step',
+    stillNeedHelp: 'Still need help? ',
+    watchTutorial: 'Watch BombCrypto-made tutorial',
+    back: 'Back',
+    next: 'Next',
+  },
+  {
+    logoAlt: 'logo',
+    gettingStartedAlt: 'Primeiros passos',
+    discordAlt: 'Entre no nosso Discord',
+    telegramAlt: 'Entre no nosso Telegram',
+    playNowAlt: 'Jogar agora',
+    playNow: 'jogar agora!',
+    arrowAlt: 'seta',
+    basicStep: 'Passos básicos',
+    advanceStep: 'Passo avançado',
+    stillNeedHelp: 'Ainda precisa de ajuda? ',
+    watchTutorial: 'Veja o tutorial feito pela BombCrypto',
+    back: 'Voltar',
+    next: 'Avançar',
+  },
+);
+
 const GettingStart: React.FC = () => {
+  const { lang } = useLang();
+  const t = TEXT[lang];
+  const list = useMemo(() => getSteps(lang), [lang]);
   const [isActive, setIsActive] = useState(0);
   const [isShow, SetShowModalComingSoon] = useState(false);
   const transition = useTransition(list[isActive], {
@@ -41,11 +78,11 @@ const GettingStart: React.FC = () => {
       <Container>
         <Menu>
           <Link to="/">
-            <img width={120} src={logo} alt="logo" />
+            <img width={120} src={logo} alt={t.logoAlt} />
           </Link>
           <div>
             <a href="">
-              <img width={150} src={started} alt="" />
+              <img width={150} src={started} alt={t.gettingStartedAlt} />
             </a>
             <a
               onClick={trackClickComunity}
@@ -53,7 +90,7 @@ const GettingStart: React.FC = () => {
               target="_blank"
               rel="noreferrer"
             >
-              <img width={165} src={menu_join} alt="" />
+              <img width={165} src={menu_join} alt={t.discordAlt} />
             </a>
             <a
               onClick={trackClickComunity}
@@ -61,7 +98,7 @@ const GettingStart: React.FC = () => {
               target="_blank"
               rel="noreferrer"
             >
-              <img width={175} src={menu_tele} alt="" />
+              <img width={175} src={menu_tele} alt={t.telegramAlt} />
             </a>
             <a
               href="https://game.bombcrypto.io/"
@@ -70,11 +107,11 @@ const GettingStart: React.FC = () => {
               className="position-relative"
               onClick={() => logTrackClickEventAnalytics('play_click')}
             >
-              <img src={playNow} alt="playNow" width={100} />
+              <img src={playNow} alt={t.playNowAlt} width={100} />
               <ButtonPlayNow className="text-uppercase w-100 text-center fw-550">
-                play now!
+                {t.playNow}
               </ButtonPlayNow>
-              <ImgArrow src={arrow} width={25} alt="arrow" />
+              <ImgArrow src={arrow} width={25} alt={t.arrowAlt} />
             </a>
             <ModalAdvertisement
               isShow={isShow}
@@ -86,10 +123,10 @@ const GettingStart: React.FC = () => {
         <StyleSlide className="row">
           <TopText>
             <div className="left">
-              <h4>Basic step</h4>
+              <h4>{t.basicStep}</h4>
             </div>
             <div className="right">
-              <h4>Advance step</h4>
+              <h4>{t.advanceStep}</h4>
             </div>
           </TopText>
           {list.map((item, key) => {
@@ -152,15 +189,14 @@ const GettingStart: React.FC = () => {
                   >
                     <div className="col-6 text-center"></div>
                     <div className="col-6 text-center">
-                      <span>Still need help? </span>
+                      <span>{t.stillNeedHelp}</span>
                       <a
                         className="fw-600 text-dark text-decoration-none"
                         href="https://www.youtube.com/watch?v=PwgCs2aH5TA&feature=youtu.be"
                         target="_blank"
                         rel="noreferrer"
                       >
-                        <img src={right} alt="" /> Watch BombCrypto-made
-                        tutorial
+                        <img src={right} alt="" /> {t.watchTutorial}
                       </a>
                     </div>
                   </animated.div>
@@ -176,13 +212,13 @@ const GettingStart: React.FC = () => {
                   onClick={() => setIsActive(isActive - 1)}
                   w={5}
                   src={back}
-                  alt=""
+                  alt={t.back}
                 />
                 <StyleImg
                   onClick={() => setIsActive(isActive + 1)}
                   w={5}
                   src={next}
-                  alt=""
+                  alt={t.next}
                 />
               </React.Fragment>
             ) : (
@@ -194,7 +230,7 @@ const GettingStart: React.FC = () => {
                   className="d-block mb-3"
                   rel="noreferrer"
                 >
-                  <StyleImg w={15} src={discord} alt="" />
+                  <StyleImg w={15} src={discord} alt={t.discordAlt} />
                 </a>
                 <a
                   onClick={trackClickComunity}
@@ -203,7 +239,7 @@ const GettingStart: React.FC = () => {
                   className="d-block"
                   rel="noreferrer"
                 >
-                  <StyleImg w={15} src={telegram} alt="" />
+                  <StyleImg w={15} src={telegram} alt={t.telegramAlt} />
                 </a>
               </div>
             )}

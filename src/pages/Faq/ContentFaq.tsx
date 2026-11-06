@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { Col } from 'react-bootstrap';
 
-import { buttonList } from 'src/data/faq/listButton';
-import { tabContents } from 'src/data/faq/tab';
+import { buttonList, buttonListPt } from 'src/data/faq/listButton';
+import { tabContents, Tabs } from 'src/data/faq/tab';
+import { tabContents as tabContentsPt } from 'src/data/faq/tab.pt';
+import { defineText, useLang, useText } from 'src/i18n';
 import TabContentFaq from 'src/components/TabContentFaq';
 import {
   arcadeBorder,
@@ -13,6 +15,62 @@ import {
   hardShadow,
 } from 'src/theme/arcade';
 import { ArcadeContainer } from 'src/components/ui';
+
+const TEXT = defineText(
+  {
+    results: (n: number) => `${n} result${n === 1 ? '' : 's'}`,
+    noResults: 'No questions found. Try other words.',
+  },
+  {
+    results: (n: number) => `${n} resultado${n === 1 ? '' : 's'}`,
+    noResults: 'Nenhuma pergunta encontrada. Tente outras palavras.',
+  },
+);
+
+// Busca sem acento e sem diferenciar maiúsculas; ignora as tags HTML das respostas.
+function normalize(value: string) {
+  return value
+    .replace(/<[^>]*>/g, ' ')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+}
+
+function searchFaq(categories: Tabs[][], query: string): Tabs[] {
+  const words = normalize(query).split(/\s+/).filter(Boolean);
+  const seen = new Set<string>();
+  const found: Tabs[] = [];
+  categories.forEach((list) =>
+    list.forEach((item) => {
+      // a mesma pergunta aparece em várias categorias (às vezes com espaços
+      // diferentes no texto): mostra uma vez só, pelo título
+      const key = normalize(item.titleTab).trim();
+      if (seen.has(key)) return;
+      seen.add(key);
+      const haystack = normalize(`${item.titleTab} ${item.text}`);
+      if (words.every((w) => haystack.includes(w))) found.push(item);
+    }),
+  );
+  return found;
+}
+
+const SearchResults = styled.div`
+  padding: 24px 8px;
+  color: ${arcadeColors.cloud};
+
+  .faq-results-count {
+    font-family: ${arcadeFonts.display};
+    font-size: 13px;
+    letter-spacing: 1px;
+    color: ${arcadeColors.smoke};
+  }
+
+  .faq-no-results {
+    text-align: center;
+    color: ${arcadeColors.smoke};
+    padding: 24px 0;
+  }
+`;
 
 const Wrapper = styled.section`
   border-top: 2px solid rgba(255, 255, 255, 0.12);
@@ -100,14 +158,24 @@ const ToggleButton = styled.div`
   }
 `;
 
-const ContentFaq: React.FC<{ id: string }> = ({ id }) => {
+const ContentFaq: React.FC<{ id: string; query: string }> = ({ id, query }) => {
   const [isChecked, setIsChecked] = useState<number>(1);
+  const { lang } = useLang();
+  const t = useText(TEXT);
+  // aba escolhida é por índice: trocar o idioma mantém a mesma categoria
+  const buttons = lang === 'pt' ? buttonListPt : buttonList;
+  const contents = lang === 'pt' ? tabContentsPt : tabContents;
+  const searching = query.trim().length > 0;
+  const results = useMemo(
+    () => (searching ? searchFaq(contents, query) : []),
+    [contents, query, searching],
+  );
 
   return (
     <ArcadeContainer>
-      <Wrapper>
+      <Wrapper id={id}>
         <ToggleButton>
-          {buttonList.map((v, i) => {
+          {buttons.map((v, i) => {
             return (
               <input
                 type="radio"
@@ -122,7 +190,7 @@ const ContentFaq: React.FC<{ id: string }> = ({ id }) => {
             );
           })}
           <ul className="tab-list">
-            {buttonList.map((v, i) => {
+            {buttons.map((v, i) => {
               return (
                 <Col className="tab-item" key={i} xs={4} sm={3}>
                   <label
@@ -138,15 +206,30 @@ const ContentFaq: React.FC<{ id: string }> = ({ id }) => {
               );
             })}
           </ul>
-          <div className="tab-container">
-            {tabContents.map((v, i) => {
-              return (
-                <div className="tab-content" key={i}>
-                  <TabContentFaq list={v} />
-                </div>
-              );
-            })}
-          </div>
+          {searching ? (
+            <SearchResults>
+              {results.length > 0 ? (
+                <>
+                  <div className="faq-results-count">
+                    {t.results(results.length)}
+                  </div>
+                  <TabContentFaq list={results} />
+                </>
+              ) : (
+                <p className="faq-no-results">{t.noResults}</p>
+              )}
+            </SearchResults>
+          ) : (
+            <div className="tab-container">
+              {contents.map((v, i) => {
+                return (
+                  <div className="tab-content" key={i}>
+                    <TabContentFaq list={v} />
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </ToggleButton>
       </Wrapper>
     </ArcadeContainer>

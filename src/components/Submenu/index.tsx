@@ -4,6 +4,17 @@ import { Dropdown } from 'react-bootstrap';
 import { NavText, navText } from 'src/data/nav';
 import { useNavigate } from 'react-router-dom';
 import { logTrackClickEventAnalytics } from 'src/libs/logEvent';
+import { useLang } from 'src/i18n';
+import LanguageSwitch from 'src/components/ui/LanguageSwitch';
+
+/* Itens do menu do celular em português, pelo button_name de src/data/nav. */
+const NAV_PT: Record<string, string> = {
+  home: 'INÍCIO',
+  play: 'JOGAR',
+  demo: 'DEMO',
+  marketplace: 'MERCADO',
+  guide: 'GUIA',
+};
 import PolygonIcon from 'src/assests/images/Polygon_network.png';
 import BNBIcon from 'src/assests/images/Binance-network.png';
 import arrowButton from 'src/assests/images/arrow.png';
@@ -76,6 +87,9 @@ const SubMenu: React.FC<Props> = ({
   network,
 }) => {
   const navigate = useNavigate();
+  const { lang } = useLang();
+  const label = (v: NavText) =>
+    (lang === 'pt' && NAV_PT[v.button_name]) || v.text;
 
   const clickNavMenu = React.useCallback(
     (menu) => {
@@ -106,7 +120,7 @@ const SubMenu: React.FC<Props> = ({
                   href="#"
                   onClick={() => clickNavMenu(v)}
                 >
-                  {v.text}
+                  {label(v)}
                 </a>
               </li>
             );
@@ -162,6 +176,17 @@ const SubMenu: React.FC<Props> = ({
               )}
             </Dropdown.Menu>
           </Dropdown>
+        )}
+        {show && (
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginTop: '18px',
+            }}
+          >
+            <LanguageSwitch />
+          </div>
         )}
       </NavMenu>
     </Wrapper>

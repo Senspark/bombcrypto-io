@@ -12,6 +12,35 @@ import {
   pixelTextShadow,
 } from 'src/theme/arcade';
 import { floatY, Reveal } from 'src/components/ui';
+import { defineText, useText } from 'src/i18n';
+
+// cada item é uma linha (quebrada com <br /> como no layout original)
+const TEXT = defineText(
+  {
+    title: 'BombCrypto token (BCOIN)',
+    description: [
+      'BCOIN is the BEP-20 token which allows token holders to play, exchange, invest',
+      'and also be a part of the game ecosystem development. Taking advantage',
+      'of crypto currency assets, BCOIN has strong security manners, high liquidity,',
+      'and is easy to exchange. That can help users to play, enjoy, and make profits',
+      'from the game.',
+    ],
+    contract: 'Contract address:',
+    audit: 'BCOIN Audit Report',
+  },
+  {
+    title: 'Token do BombCrypto (BCOIN)',
+    description: [
+      'BCOIN é o token BEP-20 que permite a quem o tem jogar, trocar, investir',
+      'e também fazer parte do desenvolvimento do ecossistema do jogo. Por ser',
+      'uma criptomoeda, o BCOIN tem boa segurança, alta liquidez',
+      'e é fácil de trocar. Assim os jogadores podem jogar, se divertir e lucrar',
+      'com o jogo.',
+    ],
+    contract: 'Endereço do contrato:',
+    audit: 'Relatório de auditoria do BCOIN',
+  },
+);
 
 const SectionWrapper = styled.section`
   width: 100%;
@@ -97,27 +126,24 @@ const AuditReport = styled.a`
 `;
 
 const Introduction: React.FC<{ id: string }> = ({ id }) => {
+  const t = useText(TEXT);
   return (
     <SectionWrapper id={id}>
       <Container className="container">
         <Row>
           <Col lg={7} className="text-md-center text-lg-start">
             <Reveal>
-              <Title>BombCrypto token (BCOIN)</Title>
+              <Title>{t.title}</Title>
               <Description>
-                BCOIN is the BEP-20 token which allows token holders to play,
-                exchange, invest
-                <br />
-                and also be a part of the game ecosystem development. Taking
-                advantage <br />
-                of crypto currency assets, BCOIN has strong security manners,
-                high liquidity, <br />
-                and is easy to exchange. That can help users to play, enjoy, and
-                make profits <br />
-                from the game.
+                {t.description.map((line, i) => (
+                  <React.Fragment key={i}>
+                    {i > 0 && <br />}
+                    {line}
+                  </React.Fragment>
+                ))}
               </Description>
               <ContractAddress>
-                Contract address:{' '}
+                {t.contract}{' '}
                 <span className="address">
                   0x00e1656e45f18ec6747F5a8496Fd39B50b38396D
                 </span>
@@ -126,12 +152,12 @@ const Introduction: React.FC<{ id: string }> = ({ id }) => {
                 target="_blank"
                 href="https://github.com/verichains/public-audit-reports/blob/main/Verichains%20Public%20Audit%20Report%20-%20BCoin%20Token%20-%20v1.1.pdf"
               >
-                BCOIN Audit Report
+                {t.audit}
               </AuditReport>
             </Reveal>
           </Col>
           <Col className="d-none d-lg-block">
-            <BcoinSliderImage src={bcoinSlider} />
+            <BcoinSliderImage src={bcoinSlider} alt="BCOIN" />
           </Col>
         </Row>
       </Container>

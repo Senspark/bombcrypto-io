@@ -1,5 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { useLang } from 'src/i18n';
 import {
   arcadeBorder,
   arcadeColors,
@@ -14,6 +15,7 @@ type Props = {
 };
 
 const Drawer: React.FC<Props> = ({ isShow, setShowInVideo }) => {
+  const { lang } = useLang();
   // No celular a barra de redes ficaria por cima do conteúdo, então ela
   // começa recolhida — o usuário abre pelo botão "+".
   const [show, setShow] = useState<boolean>(
@@ -50,7 +52,15 @@ const Drawer: React.FC<Props> = ({ isShow, setShowInVideo }) => {
     <Fragment>
       <ToggleButton
         type="button"
-        aria-label={CheckShow() ? 'Hide social links' : 'Show social links'}
+        aria-label={
+          lang === 'pt'
+            ? CheckShow()
+              ? 'Esconder redes sociais'
+              : 'Mostrar redes sociais'
+            : CheckShow()
+            ? 'Hide social links'
+            : 'Show social links'
+        }
         className="d-none d-sm-flex"
         show={CheckShow()}
         onClick={onClickShow}
